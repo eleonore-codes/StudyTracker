@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title id="pageTitle">🐰 Study Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════
+   ROOT VARIABLES
+══════════════════════════════════════════════════ */
+:root {
+  --purple:     #7b5ea7;
+  --purple2:    #9b72d0;
+  --sun:        #ffd166;
+  --leaf:       #06d6a0;
+  --leaf2:      #048a65;
+  --bark:       #8b5e3c;
+  --accent:     #ef476f;
+  --text:       #2d3047;
+  --text-light: #6b7280;
+  --card:       #ffffffee;
+  --radius:     18px;
+  --shadow:     0 4px 24px rgba(45,48,71,0.10);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(180deg, #f9e4f0 0%, #ede9fe 40%, #e0f5ea 100%);
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── ANIMATED CLOUD BG ── */
+.sky-bg { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+.cloud { position:absolute; background:rgba(255,255,255,0.6); border-radius:50px; animation:drift linear infinite; }
+.cloud::before,.cloud::after { content:''; position:absolute; background:rgba(255,255,255,0.6); border-radius:50%; }
+.c1{width:120px;height:38px;top:8%;left:-140px;animation-duration:60s}
+.c1::before{width:60px;height:60px;top:-30px;left:15px}.c1::after{width:40px;height:40px;top:-18px;left:50px}
+.c2{width:90px;height:28px;top:18%;left:-110px;animation-duration:80s;animation-delay:-25s;opacity:0.4}
+.c2::before{width:44px;height:44px;top:-22px;left:10px}.c2::after{width:30px;height:30px;top:-14px;left:38px}
+.c3{width:150px;height:44px;top:5%;left:-170px;animation-duration:100s;animation-delay:-55s;opacity:0.35}
+.c3::before{width:70px;height:70px;top:-35px;left:20px}.c3::after{width:50px;height:50px;top:-22px;left:65px}
+@keyframes drift { from{transform:translateX(0)} to{transform:translateX(calc(100vw + 200px))} }
+
+/* ── LAYOUT ── */
+.app { position:relative; z-index:1; max-width:820px; margin:0 auto; padding:20px 16px 60px; }
+
+/* ── HEADER ── */
+.header { text-align:center; padding:12px 0 6px; }
+.header h1 { font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,6vw,2.8rem); color:var(--purple); text-shadow:3px 3px 0 #e0d0f5; }
+.header .subtitle { font-size:0.9rem; color:var(--text-light); font-weight:600; margin-top:2px; }
+
+/* ── TABS ── */
+.tabs { display:flex; gap:6px; justify-content:center; margin:14px 0 18px; flex-wrap:wrap; }
+.tab-btn {
+  background:white; border:2.5px solid transparent; border-radius:50px;
+  padding:7px 16px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.85rem;
+  cursor:pointer; color:var(--text-light); transition:all 0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.07);
+}
+.tab-btn.active { background:var(--purple); color:white; border-color:var(--purple); }
+.tab-btn:hover:not(.active) { border-color:var(--purple); color:var(--purple); }
+
+/* ── PANELS ── */
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* ── CARD ── */
+.card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; margin-bottom:14px; backdrop-filter:blur(8px); }
+.card-title { font-family:'Fredoka One',cursive; font-size:1.15rem; color:var(--purple); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+/* ── PET SCENE ── */
+.pet-scene { text-align:center; padding:6px 0 8px; }
+.pet-mood { font-size:0.9rem; font-weight:700; color:var(--purple); margin-top:4px; }
+.msg-bubble { background:linear-gradient(135deg,#f0ebff,#e8f5e9); border-radius:12px; padding:10px 14px; margin:8px 0; font-size:0.88rem; font-weight:600; color:var(--text); line-height:1.5; border-left:4px solid var(--purple); min-height:48px; }
+.new-msg-btn { background:var(--sun); border:none; border-radius:50px; padding:6px 16px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.82rem; cursor:pointer; color:var(--bark); transition:transform 0.15s; }
+.new-msg-btn:hover { transform:scale(1.05); }
+
+/* ── STATS ── */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.stat-box { background:linear-gradient(135deg,#f0ebff,#e8f5e9); border-radius:12px; padding:10px 6px; text-align:center; }
+.stat-val { font-family:'Fredoka One',cursive; font-size:1.6rem; color:var(--purple); line-height:1.1; }
+.stat-lbl { font-size:0.72rem; font-weight:700; color:var(--text-light); margin-top:2px; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { margin:4px 0 12px; }
+.progress-label { font-size:0.78rem; font-weight:700; color:var(--text-light); margin-bottom:3px; }
+.progress-bar { height:10px; background:#e5e7eb; border-radius:99px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--leaf),var(--sun)); transition:width 0.5s; }
+
+/* ── GRADE PILLS ── */
+.grade-pill { display:inline-block; padding:2px 9px; border-radius:99px; font-weight:800; font-size:0.82rem; }
+.g1{background:#d1fae5;color:#065f46} .g2{background:#dcfce7;color:#166534}
+.g3{background:#fef9c3;color:#854d0e} .g4{background:#fed7aa;color:#9a3412}
+.g5{background:#fee2e2;color:#991b1b} .g6{background:#fecaca;color:#7f1d1d}
+.mean-highlight { font-family:'Fredoka One',cursive; font-size:1rem; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:0.86rem; }
+th { background:var(--purple); color:white; padding:8px 9px; text-align:left; font-weight:800; white-space:nowrap; }
+th:first-child{border-radius:8px 0 0 0} th:last-child{border-radius:0 8px 0 0}
+td { padding:7px 9px; border-bottom:1px solid #f0f0f0; }
+tr:last-child td{border-bottom:none} tr:hover td{background:#f7f3ff}
+
+/* ── FORM ── */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media(max-width:480px){.form-grid{grid-template-columns:1fr}}
+.field { display:flex; flex-direction:column; gap:4px; }
+.field.full { grid-column:1/-1; }
+label { font-size:0.8rem; font-weight:800; color:var(--text-light); }
+input,select,textarea {
+  border:2px solid #e5e7eb; border-radius:9px; padding:8px 10px;
+  font-family:'Nunito',sans-serif; font-size:0.9rem; color:var(--text); outline:none;
+  transition:border-color 0.2s; background:white;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--purple)}
+textarea{resize:vertical;min-height:60px}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  background:linear-gradient(135deg,var(--purple),var(--purple2)); color:white; border:none;
+  border-radius:50px; padding:10px 24px; font-family:'Nunito',sans-serif; font-weight:800;
+  font-size:0.9rem; cursor:pointer; box-shadow:0 4px 14px rgba(123,94,167,0.3); transition:transform 0.15s;
+}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-danger { background:#fee2e2; color:#991b1b; border:none; border-radius:7px; padding:3px 9px; font-size:0.76rem; font-weight:700; cursor:pointer; }
+.btn-payout { background:linear-gradient(135deg,var(--leaf),#04a07a); color:white; border:none; border-radius:50px; padding:9px 22px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer; box-shadow:0 3px 12px rgba(6,214,160,0.3); transition:transform 0.15s; }
+.btn-payout:hover{transform:translateY(-2px)}
+
+.success-flash { background:#d1fae5; color:#065f46; border-radius:9px; padding:9px 12px; font-weight:700; font-size:0.85rem; margin-top:8px; display:none; }
+
+/* ── SEMESTER BANNER ── */
+.semester-banner { background:linear-gradient(135deg,var(--purple),var(--purple2)); color:white; border-radius:var(--radius); padding:10px 16px; font-weight:800; font-size:0.9rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+/* ── TOPIC BADGE ── */
+.topic-badge { display:inline-block; background:#ede9fe; color:var(--purple); border-radius:7px; padding:2px 7px; font-size:0.73rem; font-weight:700; margin:2px; }
+
+/* ── REWARD SYSTEMS ── */
+/* Points */
+.points-box { background:linear-gradient(135deg,#fef9c3,#fde68a); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+.points-total { font-family:'Fredoka One',cursive; font-size:2.2rem; color:#78350f; text-align:center; }
+.points-lbl { font-size:0.82rem; font-weight:700; color:#92400e; text-align:center; margin-bottom:4px; }
+.points-how { font-size:0.78rem; color:#a16207; font-weight:600; text-align:center; line-height:1.5; }
+
+/* Euro payout */
+.payout-totals-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.payout-box { border-radius:12px; padding:10px 6px; text-align:center; }
+.payout-box.earned  { background:linear-gradient(135deg,#ede9fe,#ddd6fe); }
+.payout-box.paidout { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
+.payout-box.owed    { background:linear-gradient(135deg,#fef9c3,#fde68a); }
+.payout-val { font-family:'Fredoka One',cursive; font-size:1.5rem; line-height:1.1; }
+.payout-box.earned  .payout-val{color:var(--purple)}
+.payout-box.paidout .payout-val{color:var(--leaf2)}
+.payout-box.owed    .payout-val{color:var(--bark)}
+.payout-lbl { font-size:0.7rem; font-weight:800; color:var(--text-light); margin-top:2px; }
+
+.payout-entry { display:flex; align-items:center; justify-content:space-between; background:#f0fdf4; border-radius:9px; padding:7px 11px; margin:4px 0; font-size:0.82rem; }
+.p-amount { font-family:'Fredoka One',cursive; color:var(--leaf2); font-size:1rem; }
+.p-meta { color:var(--text-light); font-weight:600; font-size:0.76rem; }
+
+.reward-chip { display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg,#fef9c3,#fde68a); border-radius:99px; padding:3px 10px; font-weight:800; font-size:0.82rem; color:var(--bark); margin:3px; }
+
+/* ── SHOP ── */
+.accessory-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(82px,1fr)); gap:8px; }
+.acc-item { text-align:center; background:#f7f3ff; border-radius:11px; padding:8px 4px; cursor:pointer; border:2.5px solid transparent; transition:all 0.2s; }
+.acc-item.owned   { border-color:var(--leaf); background:#d1fae5; }
+.acc-item.equipped{ border-color:var(--sun); background:#fef9c3; }
+.acc-item.locked  { opacity:0.45; cursor:not-allowed; }
+.acc-emoji { font-size:1.7rem; }
+.acc-name  { font-size:0.7rem; font-weight:700; color:var(--text-light); margin-top:2px; }
+.acc-cost  { font-size:0.68rem; color:var(--bark); font-weight:800; }
+
+/* ── WISH LIST ── */
+.wish-item { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#fef9c3,#fde68a); border-radius:11px; padding:9px 12px; margin:5px 0; }
+.wish-info { flex:1; }
+.wish-name { font-weight:800; font-size:0.88rem; }
+.wish-progress { font-size:0.76rem; color:var(--bark); font-weight:700; margin-top:2px; }
+.wish-progress-bar { height:7px; background:#fde68a; border-radius:99px; margin-top:3px; overflow:hidden; }
+.wish-progress-fill { height:100%; background:linear-gradient(90deg,var(--leaf),var(--sun)); border-radius:99px; transition:width 0.4s; }
+
+/* ── SECTION LABEL ── */
+.section-label { font-family:'Fredoka One',cursive; font-size:0.95rem; color:var(--purple); margin:12px 0 7px; border-left:4px solid var(--sun); padding-left:9px; }
+
+/* ── DESIGN PANEL ── */
+.design-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:480px){.design-grid{grid-template-columns:1fr}}
+.design-group { display:flex; flex-direction:column; gap:5px; }
+.design-label { font-size:0.78rem; font-weight:800; color:var(--text-light); }
+.swatch-row { display:flex; flex-wrap:wrap; gap:5px; }
+.swatch {
+  width:26px; height:26px; border-radius:50%; cursor:pointer; border:3px solid transparent;
+  box-shadow:0 2px 6px rgba(0,0,0,0.12); transition:transform 0.15s, border-color 0.15s;
+}
+.swatch:hover { transform:scale(1.18); }
+.swatch.selected { border-color:var(--purple); transform:scale(1.22); }
+.custom-color-input { width:34px; height:26px; border:2px solid #e5e7eb; border-radius:7px; cursor:pointer; padding:1px; background:none; }
+
+/* ── MOST IMPROVED ── */
+#mostImprovedCard { display:none; }
+
+/* ── CONFETTI ── */
+.confetti-piece { position:fixed; width:9px; height:9px; top:-10px; border-radius:2px; animation:fall 2.2s ease-in forwards; pointer-events:none; z-index:9999; }
+@keyframes fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+
+/* ── MODALS ── */
+@keyframes popIn { from{transform:scale(0.65);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes spin  { to{transform:rotate(360deg)} }
+
+.modal-backdrop { display:none; position:fixed; inset:0; z-index:9000; background:rgba(30,20,60,0.72); backdrop-filter:blur(6px); align-items:center; justify-content:center; overflow-y:auto; }
+.modal-backdrop.open { display:flex; }
+.modal-card { max-width:370px; width:92%; margin:auto; background:white; border-radius:26px; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,0.35); animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.modal-body { padding:18px 20px 20px; }
+.modal-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
+.btn-modal-save { background:linear-gradient(135deg,var(--purple),var(--purple2)); color:white; border:none; border-radius:50px; padding:8px 20px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer; }
+.btn-modal-close { background:#f3f4f6; border:none; border-radius:50px; padding:8px 18px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer; color:var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="sky-bg">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+</div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1 id="appTitle">🐰 Study Tracker</h1>
+    <div class="subtitle" id="appSubtitle">Your magical study companion ✨</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('home',this)">🏠 Home</button>
+    <button class="tab-btn" onclick="switchTab('grades',this)">📊 Grades</button>
+    <button class="tab-btn" onclick="switchTab('add',this)">➕ Add Grade</button>
+    <button class="tab-btn" onclick="switchTab('rewards',this)">💰 Rewards</button>
+    <button class="tab-btn" onclick="switchTab('design',this)">🎨 Design</button>
+    <button class="tab-btn" onclick="switchTab('setup',this)">⚙️ Setup</button>
+  </div>
+
+  <!-- ════ HOME ════ -->
+  <div class="panel active" id="panel-home">
+
+    <div class="card">
+      <div class="pet-scene">
+        <canvas id="mainCanvas" width="160" height="160" style="display:block;margin:0 auto;"></canvas>
+        <div class="pet-mood" id="petMoodLabel">🌟 Your study buddy is cheering!</div>
+        <div class="msg-bubble" id="petMessage">Loading a message for you…</div>
+        <button class="new-msg-btn" onclick="newMessage()">🎲 New message</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="statMean">—</div><div class="stat-lbl">Overall Mean</div></div>
+      <div class="stat-box"><div class="stat-val" id="statPoints" style="color:#b45309;">⭐ 0</div><div class="stat-lbl">Shop Points</div></div>
+      <div class="stat-box"><div class="stat-val" id="statEuros">€0</div><div class="stat-lbl">Euros Owed 💶</div></div>
+    </div>
+
+    <div class="card" style="padding:12px 16px;">
+      <div class="progress-label">⭐ Level <span id="petLevel">1</span> — <span id="pointsToNext"></span> pts to next level</div>
+      <div class="progress-bar"><div class="progress-fill" id="pointsBar" style="width:0%"></div></div>
+      <div style="font-size:0.74rem;color:var(--text-light);margin-top:3px;font-weight:600;" id="pointsLabel">0 / 100 pts</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 Subject Overview</div>
+      <div id="subjectOverview"><div style="color:var(--text-light);font-size:0.88rem;font-weight:600;">Set up your subjects in ⚙️ Setup first!</div></div>
+    </div>
+
+    <div class="card" id="mostImprovedCard">
+      <div class="card-title">📈 Most Improved</div>
+      <div id="mostImprovedContent"></div>
+    </div>
+
+  </div>
+
+  <!-- ════ GRADES ════ -->
+  <div class="panel" id="panel-grades">
+    <div class="card">
+      <div class="card-title">📊 All Grades</div>
+      <div id="semesterBannerGrades"></div>
+      <div style="margin-bottom:10px;">
+        <button class="btn-primary" style="padding:7px 16px;font-size:0.82rem;" onclick="openRecapModal()">🏆 Semester Recap &amp; Share</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Topic</th><th>Grade</th><th>⭐</th><th>€</th><th></th></tr></thead>
+          <tbody id="gradeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Means per Subject</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Subject</th><th>Written</th><th>Oral</th><th>Mean</th></tr></thead>
+          <tbody id="meanTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ADD GRADE ════ -->
+  <div class="panel" id="panel-add">
+    <div class="card">
+      <div class="card-title">➕ Log a New Grade</div>
+      <div class="form-grid">
+        <div class="field"><label>📅 Date</label><input type="date" id="gradeDate"></div>
+        <div class="field"><label>📚 Subject</label><select id="gradeSubject"><option value="">— choose —</option></select></div>
+        <div class="field"><label>🖊️ Grade Type</label>
+          <select id="gradeType">
+            <option value="written">Written Exam</option>
+            <option value="oral">Oral Participation</option>
+          </select>
+        </div>
+        <div class="field"><label>🔢 Grade (1–6)</label>
+          <select id="gradeValue">
+            <option value="1">1 — Sehr gut</option>
+            <option value="2">2 — Gut</option>
+            <option value="3">3 — Befriedigend</option>
+            <option value="4">4 — Ausreichend</option>
+            <option value="5">5 — Mangelhaft</option>
+            <option value="6">6 — Ungenügend</option>
+          </select>
+        </div>
+        <div class="field full"><label>📝 Topic / Exam Name</label><input type="text" id="gradeTopic" placeholder="e.g. Photosynthesis, Chapter 3…"></div>
+        <div class="field full"><label>💬 Note (optional)</label><textarea id="gradeNote" placeholder="How did it go?"></textarea></div>
+      </div>
+      <br>
+      <button class="btn-primary" onclick="addGrade()">💾 Save Grade</button>
+      <div class="success-flash" id="addSuccess">🎉 Grade saved!</div>
+    </div>
+  </div>
+
+  <!-- ════ REWARDS ════ -->
+  <div class="panel" id="panel-rewards">
+
+    <!-- SYSTEM 1: Points Shop -->
+    <div class="card">
+      <div class="card-title">⭐ Points Shop</div>
+      <div class="points-box">
+        <div class="points-lbl">Available to spend in the shop</div>
+        <div class="points-total" id="shopPointsDisplay">⭐ 0</div>
+        <div class="points-how">Grade 1 → +50 pts &nbsp;·&nbsp; Grade 2 → +30 pts &nbsp;·&nbsp; Grade 3 → +15 pts<br>Improvement streak → +20 pts &nbsp;·&nbsp; Semester best → +100 pts</div>
+      </div>
+      <div class="section-label">🎩 Head Accessories</div>
+      <div class="accessory-grid" id="shopHead"></div>
+      <div class="section-label">👗 Clothes</div>
+      <div class="accessory-grid" id="shopCloth"></div>
+      <div class="section-label">🪴 Home Décor</div>
+      <div class="accessory-grid" id="shopDecor"></div>
+    </div>
+
+    <!-- SYSTEM 2: Real Euro Rewards -->
+    <div class="card">
+      <div class="card-title">💶 Real-World Euro Rewards</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">
+        Parents set real euro amounts per grade. Paid out in cash — tracked separately from points.
+      </div>
+      <div class="payout-totals-grid">
+        <div class="payout-box earned"><div class="payout-val" id="euroEarned">€0.00</div><div class="payout-lbl">🏆 Earned</div></div>
+        <div class="payout-box paidout"><div class="payout-val" id="euroPaidOut">€0.00</div><div class="payout-lbl">✅ Paid Out</div></div>
+        <div class="payout-box owed"><div class="payout-val" id="euroOwed">€0.00</div><div class="payout-lbl">⏳ Owed</div></div>
+      </div>
+      <div style="text-align:center;margin:10px 0;">
+        <button class="btn-payout" onclick="showPayoutForm()">💶 Mark Money as Paid Out</button>
+      </div>
+      <div id="payoutForm" style="display:none;background:#f0fdf4;border-radius:12px;padding:12px;border:2px solid var(--leaf);margin-bottom:8px;">
+        <div style="font-weight:800;color:var(--leaf2);margin-bottom:8px;font-size:0.88rem;">💶 Record a payout</div>
+        <div class="form-grid">
+          <div class="field"><label>Amount (€)</label><input type="number" id="payoutAmount" min="0.01" step="0.01" placeholder="5.00"></div>
+          <div class="field"><label>Date</label><input type="date" id="payoutDate"></div>
+          <div class="field full"><label>Note (optional)</label><input type="text" id="payoutNote" placeholder="e.g. For Grade 1 in Maths!"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <button class="btn-primary" style="padding:8px 18px;" onclick="recordPayout()">✅ Confirm</button>
+          <button onclick="hidePayoutForm()" style="background:none;border:none;font-weight:700;cursor:pointer;color:var(--text-light);">Cancel</button>
+        </div>
+        <div class="success-flash" id="payoutSuccess">🎉 Payout recorded!</div>
+      </div>
+      <div id="payoutHistory"></div>
+      <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
+      <div style="font-size:0.8rem;color:var(--text-light);font-weight:700;margin-bottom:6px;">Breakdown by grade:</div>
+      <div id="euroBreakdown"></div>
+    </div>
+
+    <!-- Euro reward rules -->
+    <div class="card">
+      <div class="card-title">⚙️ Euro Reward Rules</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Set how many euros each grade earns. Grade 1 = best.</div>
+      <div class="form-grid">
+        <div class="field"><label>Grade 1 — Written (€)</label><input type="number" id="rw1" min="0" step="0.5" placeholder="5.00"></div>
+        <div class="field"><label>Grade 2 — Written (€)</label><input type="number" id="rw2" min="0" step="0.5" placeholder="3.00"></div>
+        <div class="field"><label>Grade 3 — Written (€)</label><input type="number" id="rw3" min="0" step="0.5" placeholder="1.00"></div>
+        <div class="field"><label>Grade 1 — Oral (€)</label><input type="number" id="ro1" min="0" step="0.5" placeholder="2.00"></div>
+        <div class="field"><label>Grade 2 — Oral (€)</label><input type="number" id="ro2" min="0" step="0.5" placeholder="1.00"></div>
+        <div class="field"><label>Grade 3 — Oral (€)</label><input type="number" id="ro3" min="0" step="0.5" placeholder="0.50"></div>
+      </div>
+      <br><button class="btn-primary" onclick="saveEuroRules()">💾 Save Rules</button>
+      <div class="success-flash" id="euroRulesSuccess">✅ Rules saved!</div>
+    </div>
+
+    <!-- Wish list -->
+    <div class="card">
+      <div class="card-title">🌟 Real-World Wish List</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Add goals to save toward with earned euros.</div>
+      <div class="form-grid">
+        <div class="field"><label>🎁 Reward name</label><input type="text" id="wishName" placeholder="e.g. New sneakers"></div>
+        <div class="field"><label>💶 Target cost (€)</label><input type="number" id="wishCost" min="1" step="0.5" placeholder="40.00"></div>
+      </div>
+      <br><button class="btn-primary" onclick="addWish()">➕ Add to Wish List</button>
+      <div id="wishListDisplay" style="margin-top:12px;"></div>
+    </div>
+
+  </div>
+
+  <!-- ════ DESIGN ════ -->
+  <div class="panel" id="panel-design">
+    <div class="card">
+      <div class="card-title">🎨 Design Your Bunny</div>
+      <div style="font-size:0.84rem;color:var(--text-light);font-weight:600;margin-bottom:12px;">Tap swatches or use the colour picker — your bunny updates live! 🐰</div>
+      <div style="text-align:center;margin-bottom:14px;">
+        <canvas id="designCanvas" width="160" height="160" style="display:block;margin:0 auto;"></canvas>
+      </div>
+      <div class="design-grid">
+        <div class="design-group">
+          <div class="design-label">🐰 Fur</div>
+          <div class="swatch-row" id="swatchBody"></div>
+          <input type="color" class="custom-color-input" id="customBody" title="Custom colour">
+        </div>
+        <div class="design-group">
+          <div class="design-label">🤍 Belly</div>
+          <div class="swatch-row" id="swatchBelly"></div>
+          <input type="color" class="custom-color-input" id="customBelly" title="Custom colour">
+        </div>
+        <div class="design-group">
+          <div class="design-label">🌸 Inner Ear</div>
+          <div class="swatch-row" id="swatchEar"></div>
+          <input type="color" class="custom-color-input" id="customEar" title="Custom colour">
+        </div>
+        <div class="design-group">
+          <div class="design-label">👁️ Eyes</div>
+          <div class="swatch-row" id="swatchEye"></div>
+          <input type="color" class="custom-color-input" id="customEye" title="Custom colour">
+        </div>
+        <div class="design-group">
+          <div class="design-label">🩷 Nose</div>
+          <div class="swatch-row" id="swatchNose"></div>
+          <input type="color" class="custom-color-input" id="customNose" title="Custom colour">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveBunnyColors()">💾 Save My Bunny</button>
+        <button onclick="resetBunnyColors()" style="background:#f3f4f6;border:none;border-radius:50px;padding:9px 18px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--text-light);">↩️ Reset</button>
+      </div>
+      <div class="success-flash" id="designSuccess">🐰 Looking amazing!</div>
+    </div>
+  </div>
+
+  <!-- ════ SETUP ════ -->
+  <div class="panel" id="panel-setup">
+    <div class="card">
+      <div class="card-title">🗓️ Semester Info</div>
+      <div class="form-grid">
+        <div class="field"><label>📅 Semester Start</label><input type="date" id="semStart"></div>
+        <div class="field"><label>📅 Semester End</label><input type="date" id="semEnd"></div>
+        <div class="field"><label>🏫 School Year</label><input type="text" id="schoolYear" placeholder="e.g. 2025/2026"></div>
+        <div class="field"><label>🌟 Child's Name</label><input type="text" id="childName" placeholder="e.g. Mia"></div>
+        <div class="field"><label>🐰 Bunny's Name</label><input type="text" id="petName" placeholder="e.g. Clover, Luna, Biscuit…"></div>
+        <div class="field"><label>🏫 Class / Grade Level</label>
+          <select id="classLevel">
+            <option value="">— choose —</option>
+            <option value="Klasse 1">Klasse 1</option><option value="Klasse 2">Klasse 2</option>
+            <option value="Klasse 3">Klasse 3</option><option value="Klasse 4">Klasse 4</option>
+            <option value="Klasse 5">Klasse 5</option><option value="Klasse 6">Klasse 6</option>
+            <option value="Klasse 7">Klasse 7</option><option value="Klasse 8">Klasse 8</option>
+            <option value="Klasse 9">Klasse 9</option><option value="Klasse 10">Klasse 10</option>
+            <option value="Oberstufe 1">Oberstufe 1</option><option value="Oberstufe 2">Oberstufe 2</option>
+            <option value="Abitur">Abitur year</option>
+          </select>
+        </div>
+      </div>
+      <br><button class="btn-primary" onclick="saveSemester()">💾 Save</button>
+      <div class="success-flash" id="semSuccess">✅ Saved!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 Subjects &amp; Topics</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Add your subjects and the exam topics to focus on.</div>
+      <div class="form-grid">
+        <div class="field"><label>Subject name</label><input type="text" id="newSubject" placeholder="e.g. Maths, Biology…"></div>
+        <div class="field"><label>Focus topics (comma-separated)</label><input type="text" id="newTopics" placeholder="e.g. Fractions, Geometry"></div>
+      </div>
+      <br><button class="btn-primary" onclick="addSubject()">➕ Add Subject</button>
+      <div style="margin-top:12px;" id="subjectList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗑️ Danger Zone</div>
+      <button class="btn-danger" onclick="clearAllData()" style="padding:9px 18px;font-size:0.88rem;">⚠️ Reset ALL data</button>
+      <div style="font-size:0.76rem;color:var(--text-light);margin-top:5px;font-weight:600;">Deletes all grades, subjects, and settings.</div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ════ CELEBRATION MODAL ════ -->
+<div class="modal-backdrop" id="celebModal">
+  <div class="modal-card">
+    <div style="width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#fce4ec,#ede9fe,#e8f4fd);position:relative;overflow:hidden;">
+      <div id="celebLoader" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;">
+        <div style="font-size:2.5rem;animation:spin 1.2s linear infinite;">✨</div>
+        <div style="font-family:'Fredoka One',cursive;color:var(--purple);">Painting your moment…</div>
+      </div>
+      <canvas id="celebCanvas" style="display:none;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="modal-body">
+      <div id="celebEmoji" style="font-size:2rem;text-align:center;margin-bottom:5px;">🎉</div>
+      <div id="celebTitle" style="font-family:'Fredoka One',cursive;font-size:1.35rem;color:var(--purple);text-align:center;margin-bottom:6px;"></div>
+      <div id="celebPoints" style="background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:10px;padding:7px 12px;text-align:center;font-weight:800;font-size:0.88rem;color:var(--bark);margin-bottom:8px;"></div>
+      <div id="celebMsg" style="font-size:0.86rem;font-weight:600;color:var(--text);text-align:center;line-height:1.5;margin-bottom:10px;"></div>
+      <div id="celebImprove" style="display:none;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:0.82rem;font-weight:700;color:#065f46;text-align:center;"></div>
+      <div class="modal-btns">
+        <button class="btn-modal-save" onclick="downloadCelebration()">💾 Save image</button>
+        <button class="btn-modal-close" onclick="closeCelebModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ RECAP MODAL ════ -->
+<div class="modal-backdrop" id="recapModal">
+  <div class="modal-card" style="max-width:420px;">
+    <canvas id="recapCanvas" width="400" height="580" style="display:block;width:100%;"></canvas>
+    <div class="modal-btns" style="padding:14px 16px 18px;">
+      <button class="btn-modal-save" onclick="downloadRecap()">💾 Save recap</button>
+      <button class="btn-modal-close" onclick="closeRecapModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════
+//  DATA STORE  (localStorage, all keys prefixed stt_)
+// ══════════════════════════════════════════════════
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem('stt_'+k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem('stt_'+k, JSON.stringify(v)),
+};
+
+function getData() {
+  return {
+    semester:    S.get('semester')    || { start:'', end:'', year:'', child:'Star Learner', petName:'Clover', classLevel:'' },
+    subjects:    S.get('subjects')    || [],
+    grades:      S.get('grades')      || [],
+    euroRules:   S.get('euroRules')   || { w1:5, w2:3, w3:1, o1:2, o2:1, o3:0.5 },
+    accessories: S.get('accessories') || { owned:[], equipped:[], pointsSpent:0 },
+    points:      S.get('points')      || 0,   // lifetime points earned
+    payouts:     S.get('payouts')     || [],
+    bunnyColors: S.get('bunnyColors') || { body:'#f9c5d5', belly:'#fff0f5', ear:'#f48fb1', eye:'#6a1b9a', nose:'#e91e63' },
+    wishList:    S.get('wishList')    || [],
+  };
+}
+function save(k,v){ S.set(k,v); }
+
+// ══════════════════════════════════════════════════
+//  SHOP CATALOGUE
+// ══════════════════════════════════════════════════
+const SHOP = [
+  // head
+  { id:'crown',   cat:'head',  name:'Crown',        emoji:'👑', pts:200 },
+  { id:'hat',     cat:'head',  name:'Party Hat',     emoji:'🎩', pts:80  },
+  { id:'bow',     cat:'head',  name:'Cute Bow',      emoji:'🎀', pts:50  },
+  { id:'glasses', cat:'head',  name:'Sunglasses',    emoji:'🕶️',pts:100 },
+  { id:'flower',  cat:'head',  name:'Flower Crown',  emoji:'🌸', pts:70  },
+  { id:'star_h',  cat:'head',  name:'Star Clip',     emoji:'⭐', pts:40  },
+  // clothes
+  { id:'scarf',   cat:'cloth', name:'Cosy Scarf',    emoji:'🧣', pts:90  },
+  { id:'bowtie',  cat:'cloth', name:'Bow Tie',       emoji:'🎀', pts:60  },
+  { id:'jacket',  cat:'cloth', name:'Mini Jacket',   emoji:'🧥', pts:150 },
+  { id:'tutu',    cat:'cloth', name:'Tutu Skirt',    emoji:'🩰', pts:130 },
+  { id:'cape',    cat:'cloth', name:'Hero Cape',     emoji:'🦸', pts:180 },
+  { id:'sweater', cat:'cloth', name:'Knit Sweater',  emoji:'🧶', pts:110 },
+  // decor
+  { id:'plant',   cat:'decor', name:'Tiny Plant',    emoji:'🪴', pts:70  },
+  { id:'lamp',    cat:'decor', name:'Cosy Lamp',     emoji:'🪔', pts:80  },
+  { id:'book',    cat:'decor', name:'Book Stack',    emoji:'📚', pts:50  },
+  { id:'pillow',  cat:'decor', name:'Heart Pillow',  emoji:'🛋️',pts:90  },
+  { id:'fairy',   cat:'decor', name:'Fairy Lights',  emoji:'✨', pts:120 },
+  { id:'frame',   cat:'decor', name:'Photo Frame',   emoji:'🖼️',pts:85  },
+];
+
+// ══════════════════════════════════════════════════
+//  POINTS ENGINE
+// ══════════════════════════════════════════════════
+function pointsForGrade(grade, prevMean) {
+  const g = Number(grade);
+  let pts = 0;
+  if (g === 1) pts = 50;
+  else if (g === 2) pts = 30;
+  else if (g === 3) pts = 15;
+  else if (g === 4) pts = 5;
+  else pts = 2;
+  // improvement bonus
+  if (prevMean !== null && g < prevMean - 0.3) pts += 20;
+  return pts;
+}
+
+function pointsForLevel(pts) {
+  // Level up every 100 pts
+  const level = Math.floor(pts / 100) + 1;
+  const inLevel = pts % 100;
+  return { level, inLevel, toNext: 100 - inLevel };
+}
+
+// ══════════════════════════════════════════════════
+//  EURO ENGINE
+// ══════════════════════════════════════════════════
+function eurosForGrade(grade, type, rules) {
+  const g = Number(grade);
+  if (type === 'written') { return g===1?rules.w1||0:g===2?rules.w2||0:g===3?rules.w3||0:0; }
+  else                    { return g===1?rules.o1||0:g===2?rules.o2||0:g===3?rules.o3||0:0; }
+}
+
+// ══════════════════════════════════════════════════
+//  CALC HELPERS
+// ══════════════════════════════════════════════════
+function calcMean(arr) {
+  if (!arr.length) return null;
+  return arr.reduce((a,b) => a + Number(b.grade), 0) / arr.length;
+}
+function fmtMean(m) { return m === null ? '—' : m.toFixed(2); }
+
+function gradePillClass(g) { return 'grade-pill g' + Math.min(6, Math.max(1, Math.round(g))); }
+
+function calcImprovement(grades) {
+  const bySubj = {};
+  grades.forEach(g => { if (!bySubj[g.subject]) bySubj[g.subject]=[]; bySubj[g.subject].push(g); });
+  let best = null;
+  Object.entries(bySubj).forEach(([subj, gs]) => {
+    if (gs.length < 2) return;
+    const sorted = [...gs].sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const first = sorted[0].grade, last = sorted[sorted.length-1].grade;
+    const delta = first - last;
+    if (delta > 0 && (!best || delta > best.delta)) best = { subject:subj, from:first, to:last, delta };
+  });
+  return best;
+}
+
+// ══════════════════════════════════════════════════
+//  BUNNY DRAWING
+// ══════════════════════════════════════════════════
+let bunnyFrame = 0;
+let bunnyMood  = 'happy';
+
+function getBunnyMood(mean) {
+  if (!mean) return 'study';
+  if (mean <= 1.5) return 'great';
+  if (mean <= 2.5) return 'happy';
+  return 'study';
+}
+
+function drawBunny(canvasId, frame, colors, small) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.imageSmoothingEnabled = true;
+
+  const base = 120;
+  const sc = (W / base) * (small ? 0.82 : 1);
+  ctx.save();
+  ctx.scale(sc, sc);
+
+  const f      = frame || 0;
+  const bounce = Math.sin(f * 0.13) * 2;
+  const blink  = (f % 80 < 4);
+  const earW   = Math.sin(f * 0.08) * 0.08;
+  const tailB  = Math.sin(f * 0.11) * 0.12;
+
+  const cx=60, cy=68+bounce;
+  const { body:B, belly:V, ear:EAR, eye:E, nose:N } = colors;
+
+  // shadow
+  ctx.beginPath(); ctx.ellipse(cx,114,17,4,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.07)'; ctx.fill();
+
+  // fluffy tail
+  ctx.save(); ctx.translate(cx+19, cy+12); ctx.rotate(tailB);
+  ctx.beginPath(); ctx.arc(0,0,9,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+  ctx.beginPath(); ctx.arc(-2,-2,6,0,Math.PI*2); ctx.fillStyle='#f9f9f9'; ctx.fill();
+  ctx.restore();
+
+  // body
+  ctx.beginPath(); ctx.ellipse(cx, cy+8, 22, 25, 0, 0, Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  // belly
+  ctx.beginPath(); ctx.ellipse(cx, cy+13, 13, 17, 0, 0, Math.PI*2); ctx.fillStyle=V; ctx.fill();
+
+  // arms
+  ctx.beginPath(); ctx.ellipse(cx-20,cy+3,7,10,0.35,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx-20,cy+13,5,0,Math.PI*2); ctx.fillStyle=V; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx+20,cy+3,7,10,-0.35,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+20,cy+13,5,0,Math.PI*2); ctx.fillStyle=V; ctx.fill();
+
+  // feet
+  ctx.beginPath(); ctx.ellipse(cx-11,cy+33,9,5,0.2,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx+11,cy+33,9,5,-0.2,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  [[cx-11,cy+33],[cx+11,cy+33]].forEach(([fx,fy])=>{
+    ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=1; ctx.lineCap='round';
+    [-4,0,4].forEach(dx=>{ ctx.beginPath(); ctx.moveTo(fx+dx,fy); ctx.lineTo(fx+dx,fy+5); ctx.stroke(); });
+  });
+
+  // long floppy ears
+  [-11,11].forEach((ex,i)=>{
+    const lean = i===0 ? -0.18+earW : 0.18-earW;
+    ctx.save(); ctx.translate(cx+ex, cy-30); ctx.rotate(lean);
+    ctx.beginPath(); ctx.ellipse(0,0,8,24,0,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,2,5,18,0,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+    ctx.restore();
+  });
+
+  // head
+  ctx.beginPath(); ctx.arc(cx, cy-16, 21, 0, Math.PI*2); ctx.fillStyle=B; ctx.fill();
+
+  // cheek blush
+  ctx.save(); ctx.globalAlpha=0.32;
+  ctx.beginPath(); ctx.ellipse(cx-13,cy-10,7,5,-0.2,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx+13,cy-10,7,5,0.2,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+  ctx.restore();
+
+  // eyes
+  const bH = blink ? 1.5 : 9;
+  [-8,8].forEach(ex=>{
+    ctx.beginPath(); ctx.ellipse(cx+ex,cy-18,9,bH,0,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+    if (!blink) {
+      ctx.beginPath(); ctx.arc(cx+ex,cy-18,6,0,Math.PI*2); ctx.fillStyle=E; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+ex,cy-18,3.2,0,Math.PI*2); ctx.fillStyle='#111'; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+ex+2.5,cy-21,2.2,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.95)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+ex-2,cy-16,1,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fill();
+    }
+    ctx.beginPath(); ctx.ellipse(cx+ex,cy-18,9,bH,0,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=1; ctx.stroke();
+  });
+
+  // nose
+  ctx.beginPath(); ctx.arc(cx,cy-9,3.5,0,Math.PI*2); ctx.fillStyle=N; ctx.fill();
+
+  // whiskers
+  ctx.strokeStyle='rgba(0,0,0,0.14)'; ctx.lineWidth=0.9; ctx.lineCap='round';
+  [-1,1].forEach(d=>{
+    ctx.beginPath(); ctx.moveTo(cx,cy-9); ctx.lineTo(cx+d*19,cy-12); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,cy-9); ctx.lineTo(cx+d*19,cy-9);  ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,cy-9); ctx.lineTo(cx+d*17,cy-6);  ctx.stroke();
+  });
+
+  // smile
+  ctx.beginPath(); ctx.moveTo(cx-4,cy-5); ctx.quadraticCurveTo(cx,cy-2,cx+4,cy-5);
+  ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=1.4; ctx.lineCap='round'; ctx.stroke();
+
+  // accessories
+  const d = getData();
+  const eq = d.accessories.equipped || [];
+  const headY = cy - 48;
+  if      (eq.includes('crown'))   { ctx.font='24px serif'; ctx.fillText('👑',cx-12,headY); }
+  else if (eq.includes('hat'))     { ctx.font='22px serif'; ctx.fillText('🎩',cx-11,headY+2); }
+  else if (eq.includes('flower'))  { ctx.font='20px serif'; ctx.fillText('🌸',cx-10,headY+4); }
+  else if (eq.includes('star_h'))  { ctx.font='18px serif'; ctx.fillText('⭐',cx-9,headY+6); }
+  if (eq.includes('glasses'))      { ctx.font='18px serif'; ctx.fillText('🕶️',cx-13,cy-14); }
+  if (eq.includes('bow'))          { ctx.font='16px serif'; ctx.fillText('🎀',cx+10,cy-40); }
+  if (eq.includes('scarf'))        { ctx.font='18px serif'; ctx.fillText('🧣',cx-16,cy-2); }
+  else if (eq.includes('bowtie'))  { ctx.font='14px serif'; ctx.fillText('🎀',cx-7,cy-2); }
+  // cloth on body
+  if (eq.includes('jacket') || eq.includes('sweater') || eq.includes('tutu') || eq.includes('cape')) {
+    const clothEmoji = eq.includes('jacket')?'🧥':eq.includes('sweater')?'🧶':eq.includes('tutu')?'🩰':'🦸';
+    ctx.font='22px serif'; ctx.fillText(clothEmoji,cx-11,cy+30);
+  }
+  // decor
+  const decorMap=[['plant','🪴',cx+34,cy+8,20],['lamp','🪔',cx-48,cy+4,18],['book','📚',cx+32,cy+28,18],
+                  ['pillow','🛋️',cx-50,cy+26,20],['fairy','✨',cx+26,cy-46,16],['frame','🖼️',cx-52,cy-18,20]];
+  decorMap.forEach(([id,em,x,y,sz])=>{ if(eq.includes(id)){ctx.font=`${sz}px serif`;ctx.fillText(em,x,y);} });
+
+  ctx.restore();
+}
+
+function animateBunny() {
+  const d = getData();
+  const mean = d.grades.length ? d.grades.reduce((a,b)=>a+Number(b.grade),0)/d.grades.length : null;
+  bunnyMood = getBunnyMood(mean);
+  drawBunny('mainCanvas', bunnyFrame, d.bunnyColors);
+  bunnyFrame++;
+  requestAnimationFrame(animateBunny);
+}
+
+// ══════════════════════════════════════════════════
+//  AI MESSAGE
+// ══════════════════════════════════════════════════
+const FALLBACK_MSGS = [
+  'Every great learner started exactly where you are. One small step at a time! 🌱',
+  'Making a mistake just means your brain is learning something new. That\'s amazing! 🧠',
+  'You showed up today — that\'s already a win. Keep going! 💪',
+  'Studying a little bit every day is like watering a plant — slow, but it really works! 🌻',
+  'Is there one tricky topic you could spend 10 minutes on today? Just 10 minutes! ⏱️',
+  'I believe in you more than you know. You are smarter than you think! ✨',
+  'Your effort matters more than your grade. I see how hard you work! 🐰',
+  'What\'s one thing you learned today that surprised you? Think about it! 🤩',
+];
+let msgIdx = 0, loadingMsg = false;
+
+async function fetchAIMessage() {
+  const d = getData();
+  const petName = d.semester.petName || 'Clover';
+  const child   = d.semester.child   || 'you';
+  const subjs   = d.subjects.map(s=>s.name).join(', ') || 'various subjects';
+  const recent  = d.grades.slice(-5).map(g=>`${g.subject}: ${g.grade}`).join(', ') || 'no grades yet';
+  const prompt  = `You are ${petName}, a cheerful bunny companion for a school child named ${child}. They study ${subjs}. Recent grades: ${recent}. Write ONE warm, age-appropriate motivational message (2-3 sentences). Be encouraging, specific, end with a tip or question. Use 1-2 emojis. Sign off as ${petName}. Respond with ONLY the message.`;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await r.json();
+    const txt = data?.content?.[0]?.text?.trim();
+    if (txt && txt.length > 10) return txt;
+  } catch {}
+  return null;
+}
+
+async function newMessage() {
+  if (loadingMsg) return;
+  loadingMsg = true;
+  const el = document.getElementById('petMessage');
+  el.textContent = '🐰 Thinking…';
+  const ai = await fetchAIMessage();
+  if (ai) { el.textContent = ai; }
+  else { msgIdx = (msgIdx+1) % FALLBACK_MSGS.length; el.textContent = FALLBACK_MSGS[msgIdx]; }
+  loadingMsg = false;
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ══════════════════════════════════════════════════
+function renderAll() { renderHome(); renderGrades(); renderRewards(); renderSetup(); }
+
+function renderHome() {
+  const d = getData();
+  const grades = d.grades;
+  const petName = d.semester.petName || 'Clover';
+  const child   = d.semester.child   || '';
+
+  // Header
+  document.getElementById('appTitle').textContent   = `🐰 ${petName}'s Study Tracker`;
+  document.getElementById('appSubtitle').textContent = `${child ? child+"'s " : ''}study companion ✨${d.semester.classLevel ? ' · '+d.semester.classLevel : ''}`;
+  document.title = `${petName}'s Study Tracker`;
+
+  // Mood label
+  const moods = { great:`🌟 ${petName} is GLOWING with pride!`, happy:`😊 ${petName} is happy and cheering!`, study:`📚 ${petName} is ready to study!` };
+  document.getElementById('petMoodLabel').textContent = moods[bunnyMood] || moods.happy;
+
+  // Stats
+  const mean = calcMean(grades);
+  document.getElementById('statMean').textContent = mean ? fmtMean(mean) : '—';
+
+  const pts = d.points || 0;
+  const { level, inLevel, toNext } = pointsForLevel(pts);
+  const acc = d.accessories;
+  const shopPts = Math.max(0, pts - (acc.pointsSpent||0));
+  document.getElementById('statPoints').textContent   = `⭐ ${shopPts}`;
+  document.getElementById('petLevel').textContent     = level;
+  document.getElementById('pointsToNext').textContent = toNext;
+  document.getElementById('pointsBar').style.width    = (inLevel) + '%';
+  document.getElementById('pointsLabel').textContent  = `${inLevel} / 100 pts`;
+
+  const totalEarned   = grades.reduce((s,g) => s + eurosForGrade(g.grade,g.type,d.euroRules), 0);
+  const totalPaidOut  = (d.payouts||[]).reduce((s,p) => s + Number(p.amount), 0);
+  document.getElementById('statEuros').textContent = '€' + Math.max(0, totalEarned - totalPaidOut).toFixed(2);
+
+  // Subject bars
+  const overviewEl = document.getElementById('subjectOverview');
+  if (!d.subjects.length) { overviewEl.innerHTML = '<div style="color:var(--text-light);font-size:0.88rem;font-weight:600;">Set up subjects in ⚙️ Setup first!</div>'; }
+  else {
+    overviewEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:9px;">' +
+      d.subjects.map(s => {
+        const sg = grades.filter(g=>g.subject===s.name);
+        const sm = calcMean(sg);
+        const pct = sm ? Math.max(0,Math.min(100,((6-sm)/5)*100)) : 0;
+        const bc  = sm<=2?'var(--leaf)':sm<=3?'var(--sun)':'var(--accent)';
+        return `<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-weight:800;font-size:0.86rem;">${s.name}</span>
+          <span class="${gradePillClass(sm||3)}" style="font-size:0.76rem;">${sm?fmtMean(sm):'—'}</span>
+        </div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${bc};"></div></div></div>`;
+      }).join('') + '</div>';
+  }
+
+  // Most improved
+  const imp = calcImprovement(grades);
+  const impCard = document.getElementById('mostImprovedCard');
+  if (imp) {
+    impCard.style.display = 'block';
+    document.getElementById('mostImprovedContent').innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:2rem;">🚀</div>
+        <div>
+          <div style="font-weight:800;color:var(--leaf2);">${imp.subject}</div>
+          <div style="font-size:0.83rem;font-weight:700;color:var(--text-light);">
+            <span class="${gradePillClass(imp.from)}" style="font-size:0.76rem;">${imp.from}</span>
+            → <span class="${gradePillClass(imp.to)}" style="font-size:0.76rem;">${imp.to}</span>
+            <span style="color:var(--leaf2);margin-left:4px;">↑ ${imp.delta.toFixed(1)} pts better!</span>
+          </div>
+        </div>
+      </div>`;
+  } else { impCard.style.display = 'none'; }
+}
+
+function renderGrades() {
+  const d = getData();
+  const grades = d.grades;
+
+  // Banner
+  const sb = document.getElementById('semesterBannerGrades');
+  if (d.semester.year || d.semester.classLevel) {
+    const parts = [d.semester.year, d.semester.classLevel, d.semester.child].filter(Boolean);
+    sb.innerHTML = `<div class="semester-banner">📅 ${parts.join(' · ')} &nbsp;|&nbsp; ${d.semester.start||'?'} → ${d.semester.end||'?'}</div>`;
+  } else { sb.innerHTML = ''; }
+
+  // Grade table
+  const tbody = document.getElementById('gradeTableBody');
+  if (!grades.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-light);text-align:center;padding:18px;font-weight:700;">No grades yet — add your first! 🐰</td></tr>';
+  } else {
+    const sorted = [...grades].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    tbody.innerHTML = sorted.map(g => {
+      const realIdx = grades.indexOf(g);
+      const euros   = eurosForGrade(g.grade, g.type, d.euroRules);
+      const pts     = g.pts || 0;
+      return `<tr>
+        <td style="font-size:0.8rem;">${g.date}</td>
+        <td style="font-weight:700;">${g.subject}</td>
+        <td><span style="font-size:0.76rem;background:${g.type==='written'?'#dbeafe':'#fce7f3'};padding:1px 7px;border-radius:99px;font-weight:700;color:${g.type==='written'?'#1e40af':'#9d174d'};">${g.type==='written'?'Written':'Oral'}</span></td>
+        <td style="font-size:0.8rem;color:var(--text-light);">${g.topic||'—'}</td>
+        <td><span class="${gradePillClass(g.grade)}">${g.grade}</span></td>
+        <td style="font-weight:800;color:#b45309;">${pts>0?'⭐'+pts:'—'}</td>
+        <td style="font-weight:800;color:var(--leaf2);">${euros>0?'€'+euros.toFixed(2):'—'}</td>
+        <td><button class="btn-danger" onclick="deleteGrade(${realIdx})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Means table
+  const mtbody = document.getElementById('meanTableBody');
+  if (!d.subjects.length) {
+    mtbody.innerHTML = '<tr><td colspan="4" style="color:var(--text-light);text-align:center;padding:14px;">Add subjects in Setup first.</td></tr>';
+    return;
+  }
+  mtbody.innerHTML = d.subjects.map(s => {
+    const sg = grades.filter(g=>g.subject===s.name);
+    const wm = calcMean(sg.filter(g=>g.type==='written'));
+    const om = calcMean(sg.filter(g=>g.type==='oral'));
+    const am = calcMean(sg);
+    return `<tr>
+      <td style="font-weight:800;">${s.name}</td>
+      <td>${wm!==null?`<span class="${gradePillClass(wm)} mean-highlight">${fmtMean(wm)}</span>`:'—'}</td>
+      <td>${om!==null?`<span class="${gradePillClass(om)} mean-highlight">${fmtMean(om)}</span>`:'—'}</td>
+      <td>${am!==null?`<span class="${gradePillClass(am)} mean-highlight">${fmtMean(am)}</span>`:'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRewards() {
+  const d = getData();
+  const grades = d.grades;
+  const acc = d.accessories;
+  const payouts = d.payouts || [];
+
+  // Points shop
+  const pts = d.points || 0;
+  const shopPts = Math.max(0, pts - (acc.pointsSpent||0));
+  document.getElementById('shopPointsDisplay').textContent = `⭐ ${shopPts}`;
+
+  const renderShop = (elId, cat) => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    el.innerHTML = SHOP.filter(i=>i.cat===cat).map(item => {
+      const owned    = (acc.owned||[]).includes(item.id);
+      const equipped = (acc.equipped||[]).includes(item.id);
+      const canAfford = shopPts >= item.pts;
+      let cls = 'acc-item';
+      if (equipped) cls += ' equipped';
+      else if (owned) cls += ' owned';
+      else if (!canAfford) cls += ' locked';
+      const lbl = equipped?'✅ Equipped':owned?'Tap to equip':`⭐${item.pts}`;
+      return `<div class="${cls}" onclick="handleShop('${item.id}',${item.pts})">
+        <div class="acc-emoji">${item.emoji}</div>
+        <div class="acc-name">${item.name}</div>
+        <div class="acc-cost">${lbl}</div>
+      </div>`;
+    }).join('');
+  };
+  renderShop('shopHead','head');
+  renderShop('shopCloth','cloth');
+  renderShop('shopDecor','decor');
+
+  // Euro rules
+  const r = d.euroRules;
+  ['rw1','rw2','rw3','ro1','ro2','ro3'].forEach((id,i)=>{
+    const keys=['w1','w2','w3','o1','o2','o3'];
+    const el=document.getElementById(id);
+    if(el) el.value = r[keys[i]] ?? '';
+  });
+
+  // Euro totals
+  const totalEarned  = grades.reduce((s,g) => s + eurosForGrade(g.grade,g.type,d.euroRules), 0);
+  const totalPaidOut = payouts.reduce((s,p) => s + Number(p.amount), 0);
+  const owed = Math.max(0, totalEarned - totalPaidOut);
+  document.getElementById('euroEarned').textContent  = `€${totalEarned.toFixed(2)}`;
+  document.getElementById('euroPaidOut').textContent = `€${totalPaidOut.toFixed(2)}`;
+  document.getElementById('euroOwed').textContent    = `€${owed.toFixed(2)}`;
+
+  // Payout history
+  const phEl = document.getElementById('payoutHistory');
+  if (payouts.length) {
+    phEl.innerHTML = `<div style="font-size:0.8rem;color:var(--text-light);font-weight:700;margin:8px 0 5px;">💶 Payout history:</div>` +
+      payouts.slice().reverse().map((p,ri) => {
+        const realIdx = payouts.length-1-ri;
+        return `<div class="payout-entry">
+          <div><div class="p-amount">€${Number(p.amount).toFixed(2)}</div>
+          <div class="p-meta">${p.date}${p.note?' · ':''}<span>${p.note||''}</span></div></div>
+          <button class="btn-danger" onclick="deletePayout(${realIdx})">✕</button>
+        </div>`;
+      }).join('');
+  } else { phEl.innerHTML=''; }
+
+  // Euro breakdown
+  const earning = grades.filter(g => eurosForGrade(g.grade,g.type,d.euroRules)>0);
+  document.getElementById('euroBreakdown').innerHTML = earning.length
+    ? earning.slice().reverse().map(g=>`<span class="reward-chip">💶 ${g.subject} — Grade ${g.grade} (${g.type==='written'?'Written':'Oral'}) → €${eurosForGrade(g.grade,g.type,d.euroRules).toFixed(2)}</span>`).join('')
+    : '<div style="color:var(--text-light);font-size:0.84rem;">No euros earned yet. Keep going! 🐰</div>';
+
+  // Wish list
+  renderWishList(totalEarned, totalPaidOut);
+}
+
+function renderSetup() {
+  const d = getData();
+  const sem = d.semester;
+  document.getElementById('semStart').value   = sem.start      || '';
+  document.getElementById('semEnd').value     = sem.end        || '';
+  document.getElementById('schoolYear').value = sem.year       || '';
+  document.getElementById('childName').value  = sem.child      || '';
+  document.getElementById('petName').value    = sem.petName    || '';
+  document.getElementById('classLevel').value = sem.classLevel || '';
+
+  const sl = document.getElementById('subjectList');
+  if (!d.subjects.length) {
+    sl.innerHTML = '<div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No subjects yet.</div>';
+  } else {
+    sl.innerHTML = d.subjects.map((s,i) => `
+      <div style="display:flex;align-items:flex-start;gap:8px;background:#ede9fe;border-radius:11px;padding:8px 12px;margin:4px 0;">
+        <div style="flex:1;">
+          <div style="font-weight:800;color:var(--purple);">📚 ${s.name}</div>
+          ${(s.topics||[]).length?`<div style="margin-top:3px;">${s.topics.map(t=>`<span class="topic-badge">${t}</span>`).join('')}</div>`:''}
+        </div>
+        <button onclick="removeSubject(${i})" style="background:none;border:none;cursor:pointer;color:#9b72d0;font-size:1.1rem;">✕</button>
+      </div>`).join('');
+  }
+
+  const sel = document.getElementById('gradeSubject');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— choose —</option>' + d.subjects.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  if (cur) sel.value = cur;
+}
+
+function renderWishList(totalEarned, totalPaidOut) {
+  const d = getData();
+  const el = document.getElementById('wishListDisplay');
+  if (!el) return;
+  if (!d.wishList.length) {
+    el.innerHTML = '<div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No wishes yet — add a goal to save toward! 🌟</div>';
+    return;
+  }
+  const owed = Math.max(0, totalEarned - totalPaidOut);
+  el.innerHTML = d.wishList.map((w,i) => {
+    const pct = Math.min(100, (owed/w.cost)*100);
+    const reached = owed >= w.cost;
+    return `<div class="wish-item">
+      <div style="font-size:1.5rem;">${reached?'🎉':'🌟'}</div>
+      <div class="wish-info">
+        <div class="wish-name">${w.name}</div>
+        <div class="wish-progress">€${owed.toFixed(2)} / €${w.cost.toFixed(2)} ${reached?'— Ready! 🎊':`(${pct.toFixed(0)}%)`}</div>
+        <div class="wish-progress-bar"><div class="wish-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <button class="btn-danger" onclick="removeWish(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS
+// ══════════════════════════════════════════════════
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab==='design') initDesignPanel();
+  renderAll();
+}
+
+function addGrade() {
+  const date    = document.getElementById('gradeDate').value;
+  const subject = document.getElementById('gradeSubject').value;
+  const type    = document.getElementById('gradeType').value;
+  const grade   = document.getElementById('gradeValue').value;
+  const topic   = document.getElementById('gradeTopic').value.trim();
+  const note    = document.getElementById('gradeNote').value.trim();
+  if (!date || !subject || !grade) { alert('Please fill in date, subject, and grade!'); return; }
+
+  const d = getData();
+  const prev    = d.grades.filter(g=>g.subject===subject);
+  const prevMean = prev.length ? prev.reduce((a,b)=>a+b.grade,0)/prev.length : null;
+
+  const pts   = pointsForGrade(grade, prevMean);
+  const entry = { date, subject, type, grade:Number(grade), topic, note, pts, id:Date.now() };
+
+  d.grades.push(entry);
+  d.points = (d.points||0) + pts;
+  save('grades', d.grades);
+  save('points', d.points);
+
+  document.getElementById('gradeTopic').value = '';
+  document.getElementById('gradeNote').value  = '';
+  renderAll();
+  openCelebModal(entry, prevMean, pts, d);
+}
+
+function deleteGrade(idx) {
+  if (!confirm('Remove this grade?')) return;
+  const d = getData();
+  const g = d.grades[idx];
+  if (g) { d.points = Math.max(0, (d.points||0) - (g.pts||0)); save('points', d.points); }
+  d.grades.splice(idx,1);
+  save('grades', d.grades);
+  renderAll();
+}
+
+function saveSemester() {
+  const d = getData();
+  d.semester = {
+    start:      document.getElementById('semStart').value,
+    end:        document.getElementById('semEnd').value,
+    year:       document.getElementById('schoolYear').value,
+    child:      document.getElementById('childName').value,
+    petName:    document.getElementById('petName').value.trim() || 'Clover',
+    classLevel: document.getElementById('classLevel').value,
+  };
+  save('semester', d.semester);
+  flashSuccess('semSuccess'); renderAll();
+}
+
+function addSubject() {
+  const name = document.getElementById('newSubject').value.trim();
+  if (!name) return;
+  const topics = document.getElementById('newTopics').value.trim().split(',').map(t=>t.trim()).filter(Boolean);
+  const d = getData();
+  if (d.subjects.find(s=>s.name.toLowerCase()===name.toLowerCase())) { alert('Subject already exists!'); return; }
+  d.subjects.push({ name, topics });
+  save('subjects', d.subjects);
+  document.getElementById('newSubject').value = '';
+  document.getElementById('newTopics').value  = '';
+  renderSetup();
+}
+
+function removeSubject(idx) {
+  if (!confirm('Remove this subject?')) return;
+  const d = getData();
+  d.subjects.splice(idx,1);
+  save('subjects', d.subjects);
+  renderSetup();
+}
+
+function saveEuroRules() {
+  const keys = ['w1','w2','w3','o1','o2','o3'];
+  const ids  = ['rw1','rw2','rw3','ro1','ro2','ro3'];
+  const rules = {};
+  keys.forEach((k,i) => rules[k] = parseFloat(document.getElementById(ids[i]).value)||0);
+  save('euroRules', rules);
+  flashSuccess('euroRulesSuccess'); renderAll();
+}
+
+function handleShop(id, pts) {
+  const d = getData();
+  const acc = d.accessories;
+  const shopPts = Math.max(0, (d.points||0) - (acc.pointsSpent||0));
+
+  if ((acc.equipped||[]).includes(id)) {
+    acc.equipped = acc.equipped.filter(i=>i!==id);
+    save('accessories',acc); renderAll(); return;
+  }
+  if ((acc.owned||[]).includes(id)) {
+    acc.equipped = [...(acc.equipped||[]), id];
+    save('accessories',acc); renderAll(); return;
+  }
+  if (shopPts < pts) {
+    alert(`You need ⭐${pts} points but only have ⭐${shopPts}. Keep earning! 🐰`); return;
+  }
+  const item = SHOP.find(i=>i.id===id);
+  if (!confirm(`Buy "${item?.name}" for ⭐${pts} points? It will appear on your bunny! 🐰`)) return;
+  acc.owned       = [...(acc.owned||[]),id];
+  acc.equipped    = [...(acc.equipped||[]),id];
+  acc.pointsSpent = (acc.pointsSpent||0) + pts;
+  save('accessories',acc);
+  spawnConfetti(); renderAll();
+}
+
+function showPayoutForm() {
+  document.getElementById('payoutForm').style.display = 'block';
+  document.getElementById('payoutDate').value = new Date().toISOString().split('T')[0];
+}
+function hidePayoutForm() {
+  document.getElementById('payoutForm').style.display = 'none';
+  document.getElementById('payoutAmount').value = '';
+  document.getElementById('payoutNote').value   = '';
+}
+function recordPayout() {
+  const amount = parseFloat(document.getElementById('payoutAmount').value);
+  const date   = document.getElementById('payoutDate').value;
+  const note   = document.getElementById('payoutNote').value.trim();
+  if (!amount||amount<=0) { alert('Enter a valid amount!'); return; }
+  if (!date) { alert('Pick a date!'); return; }
+  const d = getData();
+  const totalEarned  = d.grades.reduce((s,g)=>s+eurosForGrade(g.grade,g.type,d.euroRules),0);
+  const totalPaidOut = d.payouts.reduce((s,p)=>s+Number(p.amount),0);
+  const owed = Math.max(0, totalEarned - totalPaidOut);
+  if (amount > owed + 0.001) { alert(`You can only pay out up to €${owed.toFixed(2)}.`); return; }
+  d.payouts.push({ amount, date, note, id:Date.now() });
+  save('payouts', d.payouts);
+  flashSuccess('payoutSuccess');
+  setTimeout(hidePayoutForm, 1800);
+  renderAll();
+}
+function deletePayout(idx) {
+  if (!confirm('Remove this payout record?')) return;
+  const d = getData();
+  d.payouts.splice(idx,1);
+  save('payouts',d.payouts); renderAll();
+}
+
+function addWish() {
+  const name = document.getElementById('wishName').value.trim();
+  const cost = parseFloat(document.getElementById('wishCost').value);
+  if (!name||!cost||cost<=0) { alert('Enter a name and target cost!'); return; }
+  const d = getData();
+  d.wishList.push({ name, cost, id:Date.now() });
+  save('wishList',d.wishList);
+  document.getElementById('wishName').value = '';
+  document.getElementById('wishCost').value = '';
+  renderAll();
+}
+function removeWish(idx) {
+  const d = getData();
+  d.wishList.splice(idx,1);
+  save('wishList',d.wishList); renderAll();
+}
+
+function flashSuccess(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'block';
+  setTimeout(()=>el.style.display='none', 2200);
+}
+
+function clearAllData() {
+  if (!confirm('⚠️ Reset ALL data — grades, subjects, settings? This cannot be undone.')) return;
+  ['semester','subjects','grades','euroRules','accessories','points','payouts','bunnyColors','wishList']
+    .forEach(k=>localStorage.removeItem('stt_'+k));
+  renderAll();
+  alert('All data cleared. Fresh start! 🐰');
+}
+
+// ══════════════════════════════════════════════════
+//  CELEBRATION MODAL
+// ══════════════════════════════════════════════════
+const GRADE_INFO = {
+  1:{ emoji:'🏆', prefix:'INCREDIBLE!' },
+  2:{ emoji:'🌟', prefix:'Amazing work!' },
+  3:{ emoji:'😊', prefix:'Well done!' },
+  4:{ emoji:'💪', prefix:'You showed up!' },
+  5:{ emoji:'🤗', prefix:'Keep going!' },
+  6:{ emoji:'🫂', prefix:'Tomorrow is a new chance!' },
+};
+
+function drawCelebCanvas(canvas, grade, subject, petName, childName, d) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width = 400, H = canvas.height = 400;
+  const g = Number(grade);
+  const palettes = {
+    1:['#fef9c3','#d1fae5'], 2:['#ede9fe','#fce4ec'],
+    3:['#e8f4fd','#f0fff4'], 4:['#fff7ed','#fce4ec'],
+    5:['#f3f4f6','#e8f4fd'], 6:['#f3f4f6','#f9fafb']
+  };
+  const cols = palettes[g] || palettes[3];
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,cols[0]); bg.addColorStop(1,cols[1]);
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  if (g<=2) {
+    for(let i=0;i<36;i++){
+      ctx.save(); ctx.translate(Math.random()*W, Math.random()*H*0.65); ctx.rotate(Math.random()*Math.PI*2);
+      ctx.fillStyle=['#ffd166','#ef476f','#06d6a0','#7b5ea7','#118ab2'][i%5];
+      ctx.fillRect(-4,-2,8,4); ctx.restore();
+    }
+    for(let i=0;i<10;i++){ctx.font=`${14+Math.random()*14}px serif`;ctx.fillText('⭐',Math.random()*(W-30)+10,Math.random()*H*0.55+10);}
+  }
+
+  // Ground ellipse
+  const grd = ctx.createLinearGradient(0,H*0.63,0,H);
+  grd.addColorStop(0, cols[0]); grd.addColorStop(1,'#ffffff44');
+  ctx.beginPath(); ctx.ellipse(W/2,H*0.82,W*0.5,H*0.13,0,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
+
+  // Bunny portrait (centred left)
+  const cx = W/2-30, cy = H/2+14, sc=0.78;
+  const { body:B, belly:V, ear:EAR, eye:E, nose:N } = d.bunnyColors;
+  // tail
+  ctx.beginPath(); ctx.arc(cx+18*sc,cy+12*sc,8*sc,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+  // body
+  ctx.beginPath(); ctx.ellipse(cx,cy+8*sc,22*sc,24*sc,0,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx,cy+13*sc,13*sc,16*sc,0,0,Math.PI*2); ctx.fillStyle=V; ctx.fill();
+  // ears
+  [-11*sc,11*sc].forEach((ex,i)=>{
+    const lean=i===0?-0.18:0.18;
+    ctx.save(); ctx.translate(cx+ex,cy-30*sc); ctx.rotate(lean);
+    ctx.beginPath(); ctx.ellipse(0,0,8*sc,23*sc,0,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,2*sc,5*sc,17*sc,0,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+    ctx.restore();
+  });
+  // head
+  ctx.beginPath(); ctx.arc(cx,cy-16*sc,21*sc,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.save(); ctx.globalAlpha=0.3;
+  ctx.beginPath(); ctx.ellipse(cx-13*sc,cy-10*sc,7*sc,5*sc,-0.2,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx+13*sc,cy-10*sc,7*sc,5*sc,0.2,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+  ctx.restore();
+  // eyes
+  [-8*sc,8*sc].forEach(ex=>{
+    ctx.beginPath(); ctx.ellipse(cx+ex,cy-18*sc,9*sc,9*sc,0,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+ex,cy-18*sc,6*sc,0,Math.PI*2); ctx.fillStyle=E; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+ex,cy-18*sc,3*sc,0,Math.PI*2); ctx.fillStyle='#111'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+ex+2.5*sc,cy-21*sc,2*sc,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.92)'; ctx.fill();
+  });
+  ctx.beginPath(); ctx.arc(cx,cy-9*sc,3.5*sc,0,Math.PI*2); ctx.fillStyle=N; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx-4*sc,cy-5*sc); ctx.quadraticCurveTo(cx,cy-2*sc,cx+4*sc,cy-5*sc);
+  ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=1.4*sc; ctx.lineCap='round'; ctx.stroke();
+
+  // Grade badge (right side)
+  const badgeCols={1:'#d1fae5',2:'#dcfce7',3:'#fef9c3',4:'#fed7aa',5:'#fee2e2',6:'#fecaca'};
+  const txtCols  ={1:'#065f46',2:'#166534',3:'#854d0e',4:'#9a3412',5:'#991b1b',6:'#7f1d1d'};
+  const bx=W/2+18, by=H/2-20;
+  if(ctx.roundRect) ctx.roundRect(bx,by,110,42,12); else ctx.rect(bx,by,110,42);
+  ctx.fillStyle=badgeCols[g]||'#ede9fe'; ctx.fill();
+  ctx.fillStyle=txtCols[g]||'#7b5ea7'; ctx.textAlign='center';
+  ctx.font='bold 14px Nunito,sans-serif'; ctx.fillText(`Grade ${g}`,bx+55,by+16);
+  ctx.font='bold 11px Nunito,sans-serif'; ctx.fillText(subject,bx+55,by+32);
+  ctx.textAlign='start';
+  ctx.font='28px serif'; ctx.fillText(GRADE_INFO[g]?.emoji||'🌟',bx+72,by-6);
+
+  // Child name footer
+  ctx.textAlign='center'; ctx.fillStyle='rgba(100,80,130,0.5)'; ctx.font='11px Nunito,sans-serif';
+  ctx.fillText(`${childName||'⭐'} · ${petName||'Clover'}`,W/2,H-12);
+  ctx.textAlign='start';
+}
+
+async function openCelebModal(entry, prevMean, pts, d) {
+  const modal = document.getElementById('celebModal');
+  modal.classList.add('open');
+  spawnConfetti();
+
+  const gNum    = Number(entry.grade);
+  const info    = GRADE_INFO[gNum] || GRADE_INFO[3];
+  const petName = d.semester.petName || 'Clover';
+  const child   = d.semester.child   || 'Star Learner';
+
+  document.getElementById('celebEmoji').textContent  = info.emoji;
+  document.getElementById('celebTitle').textContent  = `${info.prefix} ${entry.subject}!`;
+  document.getElementById('celebPoints').textContent = `⭐ +${pts} points earned!`;
+
+  const impEl = document.getElementById('celebImprove');
+  if (prevMean !== null && gNum < prevMean - 0.3) {
+    impEl.style.display = 'block';
+    impEl.textContent   = `📈 Improved by ${(prevMean-gNum).toFixed(1)} points in ${entry.subject}! 🚀`;
+  } else { impEl.style.display='none'; }
+
+  document.getElementById('celebMsg').textContent = '…';
+  const ai = await fetchAIMessage();
+  document.getElementById('celebMsg').textContent = ai || FALLBACK_MSGS[Math.floor(Math.random()*FALLBACK_MSGS.length)];
+
+  // Draw celebration canvas
+  const canvas = document.getElementById('celebCanvas');
+  canvas.style.display = 'block';
+  document.getElementById('celebLoader').style.display = 'none';
+  drawCelebCanvas(canvas, gNum, entry.subject, petName, child, d);
+}
+
+function closeCelebModal() {
+  document.getElementById('celebModal').classList.remove('open');
+  document.getElementById('celebLoader').style.display = 'flex';
+  document.getElementById('celebCanvas').style.display = 'none';
+}
+
+function downloadCelebration() {
+  const canvas = document.getElementById('celebCanvas');
+  const a = document.createElement('a'); a.download='celebration.png'; a.href=canvas.toDataURL(); a.click();
+}
+
+// ══════════════════════════════════════════════════
+//  SEMESTER RECAP MODAL
+// ══════════════════════════════════════════════════
+function openRecapModal() {
+  const d = getData();
+  if (!d.grades.length) { alert('No grades yet — log some first! 📊'); return; }
+  document.getElementById('recapModal').classList.add('open');
+  drawRecapCanvas(d);
+}
+function closeRecapModal() { document.getElementById('recapModal').classList.remove('open'); }
+function downloadRecap() {
+  const a=document.createElement('a'); a.download='semester-recap.png';
+  a.href=document.getElementById('recapCanvas').toDataURL(); a.click();
+}
+
+function drawRecapCanvas(d) {
+  const canvas = document.getElementById('recapCanvas');
+  const ctx = canvas.getContext('2d');
+  const W=400,H=580; canvas.width=W; canvas.height=H;
+
+  const child    = d.semester.child      || 'Star Learner';
+  const petName  = d.semester.petName    || 'Clover';
+  const year     = d.semester.year       || '';
+  const classLvl = d.semester.classLevel || '';
+  const grades   = d.grades;
+
+  // Background
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#fce4ec'); bg.addColorStop(0.5,'#ede9fe'); bg.addColorStop(1,'#e8f4fd');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  // confetti dots
+  const dc=['#ffd166','#ef476f','#06d6a0','#7b5ea7','#118ab2'];
+  for(let i=0;i<24;i++){ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,3+Math.random()*4,0,Math.PI*2);ctx.fillStyle=dc[i%dc.length]+'55';ctx.fill();}
+
+  // Header
+  ctx.fillStyle='#7b5ea7';
+  if(ctx.roundRect) ctx.roundRect(18,16,W-36,68,14); else ctx.rect(18,16,W-36,68);
+  ctx.fill();
+  ctx.fillStyle='white'; ctx.textAlign='center';
+  ctx.font='bold 21px "Fredoka One",cursive'; ctx.fillText('🏆 Semester Recap',W/2,50);
+  ctx.font='bold 12px Nunito,sans-serif';
+  ctx.fillText([child,classLvl,year].filter(Boolean).join(' · '),W/2,70);
+  ctx.textAlign='start';
+
+  // Overall mean
+  const mean = calcMean(grades);
+  const mStr = mean ? mean.toFixed(2) : '—';
+  const mc = mean?mean<=2?'#d1fae5':mean<=3?'#fef9c3':'#fee2e2':'#e5e7eb';
+  ctx.fillStyle=mc;
+  if(ctx.roundRect) ctx.roundRect(18,96,W-36,52,12); else ctx.rect(18,96,W-36,52);
+  ctx.fill();
+  ctx.fillStyle='#2d3047'; ctx.textAlign='center';
+  ctx.font='bold 12px Nunito,sans-serif'; ctx.fillText('Overall Mean',W/2,116);
+  ctx.font='bold 24px "Fredoka One",cursive'; ctx.fillText(mStr,W/2,140);
+  ctx.textAlign='start';
+
+  // Points earned this semester
+  const totalPts = grades.reduce((s,g)=>s+(g.pts||0),0);
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  if(ctx.roundRect) ctx.roundRect(18,156,W-36,36,10); else ctx.rect(18,156,W-36,36);
+  ctx.fill();
+  ctx.fillStyle='#2d3047'; ctx.textAlign='center'; ctx.font='bold 12px Nunito,sans-serif';
+  ctx.fillText(`⭐ ${totalPts} points earned · ${grades.length} grades logged`,W/2,178);
+  ctx.textAlign='start';
+
+  // Subject bars
+  const subjectNames = d.subjects.length ? d.subjects.map(s=>s.name) : [...new Set(grades.map(g=>g.subject))];
+  let y=202;
+  ctx.font='bold 11px Nunito,sans-serif'; ctx.fillStyle='#6b7280';
+  ctx.fillText('Subject Performance',26,y); y+=18;
+  const barH=26, gap=7;
+  subjectNames.slice(0,7).forEach(subj=>{
+    const sg=grades.filter(g=>g.subject===subj);
+    if(!sg.length) return;
+    const m=calcMean(sg);
+    const pct=Math.max(0.03,(6-m)/5);
+    const bc=m<=2?'#06d6a0':m<=3?'#ffd166':'#ef476f';
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    if(ctx.roundRect) ctx.roundRect(26,y,W-52,barH,8); else ctx.rect(26,y,W-52,barH);
+    ctx.fill();
+    ctx.fillStyle=bc;
+    if(ctx.roundRect) ctx.roundRect(26,y,(W-52)*pct,barH,8); else ctx.rect(26,y,(W-52)*pct,barH);
+    ctx.fill();
+    ctx.fillStyle='#2d3047'; ctx.textAlign='start'; ctx.font='bold 10px Nunito,sans-serif'; ctx.fillText(subj,34,y+17);
+    ctx.textAlign='end'; ctx.fillText(m.toFixed(1),W-32,y+17); ctx.textAlign='start';
+    y+=barH+gap;
+  });
+
+  // Most improved
+  const imp = calcImprovement(grades);
+  if (imp) {
+    y+=4;
+    ctx.fillStyle='#d1fae5';
+    if(ctx.roundRect) ctx.roundRect(18,y,W-36,50,12); else ctx.rect(18,y,W-36,50);
+    ctx.fill();
+    ctx.fillStyle='#065f46'; ctx.textAlign='center'; ctx.font='bold 11px Nunito,sans-serif';
+    ctx.fillText('📈 Most Improved',W/2,y+16);
+    ctx.font='bold 14px Nunito,sans-serif';
+    ctx.fillText(`${imp.subject}: ${imp.from} → ${imp.to}  (↑${imp.delta.toFixed(1)} pts better)`,W/2,y+36);
+    ctx.textAlign='start'; y+=58;
+  }
+
+  // Mini bunny portrait
+  y = Math.max(y, H-140);
+  const { body:B,belly:V,ear:EAR,eye:E,nose:N } = d.bunnyColors;
+  const pcx=W/2, pcy=y+52, ps=0.55;
+  ctx.beginPath(); ctx.arc(pcx+17*ps,pcy+12*ps,8*ps,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(pcx,pcy+8*ps,22*ps,24*ps,0,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(pcx,pcy+13*ps,13*ps,16*ps,0,0,Math.PI*2); ctx.fillStyle=V; ctx.fill();
+  [-11*ps,11*ps].forEach((ex,i)=>{
+    ctx.save(); ctx.translate(pcx+ex,pcy-30*ps); ctx.rotate(i===0?-0.18:0.18);
+    ctx.beginPath(); ctx.ellipse(0,0,8*ps,23*ps,0,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,2*ps,5*ps,17*ps,0,0,Math.PI*2); ctx.fillStyle=EAR; ctx.fill();
+    ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(pcx,pcy-16*ps,21*ps,0,Math.PI*2); ctx.fillStyle=B; ctx.fill();
+  [-8*ps,8*ps].forEach(ex=>{
+    ctx.beginPath(); ctx.ellipse(pcx+ex,pcy-18*ps,9*ps,9*ps,0,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+    ctx.beginPath(); ctx.arc(pcx+ex,pcy-18*ps,6*ps,0,Math.PI*2); ctx.fillStyle=E; ctx.fill();
+    ctx.beginPath(); ctx.arc(pcx+ex,pcy-18*ps,3*ps,0,Math.PI*2); ctx.fillStyle='#111'; ctx.fill();
+    ctx.beginPath(); ctx.arc(pcx+ex+2.5*ps,pcy-21*ps,2*ps,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.92)'; ctx.fill();
+  });
+  ctx.beginPath(); ctx.arc(pcx,pcy-9*ps,3.5*ps,0,Math.PI*2); ctx.fillStyle=N; ctx.fill();
+
+  // Footer
+  ctx.textAlign='center'; ctx.fillStyle='rgba(100,80,130,0.55)'; ctx.font='11px Nunito,sans-serif';
+  ctx.fillText(`${petName} is so proud of you! 🐰`,W/2,H-12);
+  ctx.textAlign='start';
+}
+
+// ══════════════════════════════════════════════════
+//  DESIGN BUNNY — 5-zone colour system
+// ══════════════════════════════════════════════════
+const PALETTES = {
+  body:  ['#f9c5d5','#b5d5f5','#c5e8b0','#ffd3b6','#d4b8e0','#fff0a0','#b8e0ff','#ffc8dd','#e8d5b7','#c8f0e8'],
+  belly: ['#fff0f5','#e3f2fd','#f1f8e9','#fff8e1','#f3e5f5','#fffde7','#ddeeff','#fce4ec','#fafafa','#e8f5e9'],
+  ear:   ['#f48fb1','#90caf9','#a5d6a7','#ffcc80','#ce93d8','#fff176','#80deea','#ef9a9a','#bcaaa4','#80cbc4'],
+  eye:   ['#6a1b9a','#1a237e','#1b5e20','#bf360c','#006064','#37474f','#880e4f','#4e342e','#1565c0','#2e7d32'],
+  nose:  ['#e91e63','#e53935','#ff6f00','#8e24aa','#00838f','#c62828','#ad1457','#6a1b9a','#d84315','#00695c'],
+};
+
+let designDraft = null;
+
+function initDesignPanel() {
+  const d = getData();
+  designDraft = { ...d.bunnyColors };
+  const PARTS = ['body','belly','ear','eye','nose'];
+  PARTS.forEach(part => {
+    const row = document.getElementById(`swatch${part.charAt(0).toUpperCase()+part.slice(1)}`);
+    if (!row) return;
+    row.innerHTML = PALETTES[part].map(c =>
+      `<div class="swatch${designDraft[part]===c?' selected':''}" style="background:${c}" onclick="setColor('${part}','${c}',this)"></div>`
+    ).join('');
+    const ci = document.getElementById(`custom${part.charAt(0).toUpperCase()+part.slice(1)}`);
+    if (ci) { ci.value = designDraft[part]; ci.oninput = e => setColor(part, e.target.value, null); }
+  });
+  previewDesign();
+}
+
+function setColor(part, color, swatchEl) {
+  designDraft[part] = color;
+  const rowId = `swatch${part.charAt(0).toUpperCase()+part.slice(1)}`;
+  document.querySelectorAll(`#${rowId} .swatch`).forEach(s=>s.classList.remove('selected'));
+  if (swatchEl) swatchEl.classList.add('selected');
+  const ci = document.getElementById(`custom${part.charAt(0).toUpperCase()+part.slice(1)}`);
+  if (ci) ci.value = color;
+  previewDesign();
+}
+
+function previewDesign() {
+  if (!designDraft) return;
+  const main   = document.getElementById('mainCanvas');
+  const design = document.getElementById('designCanvas');
+  if (!design) return;
+  main.id   = '_mainTmp';
+  design.id = 'mainCanvas';
+  drawBunny('mainCanvas', 45, designDraft);
+  design.id = 'mainCanvas';
+  main.id   = 'mainCanvas';
+  // Re-draw design canvas correctly
+  design.id = 'designCanvas';
+  const ctx = design.getContext('2d');
+  ctx.clearRect(0,0,design.width,design.height);
+  const sc = design.width/120;
+  ctx.save(); ctx.scale(sc,sc);
+  // inline mini-draw for design preview (no animation canvas swap needed)
+  ctx.restore();
+  drawBunny('designCanvas', 45, designDraft);
+}
+
+function saveBunnyColors() {
+  if (!designDraft) return;
+  save('bunnyColors', designDraft);
+  flashSuccess('designSuccess');
+}
+
+function resetBunnyColors() {
+  designDraft = { body:'#f9c5d5', belly:'#fff0f5', ear:'#f48fb1', eye:'#6a1b9a', nose:'#e91e63' };
+  save('bunnyColors', designDraft);
+  initDesignPanel();
+}
+
+// ══════════════════════════════════════════════════
+//  CONFETTI
+// ══════════════════════════════════════════════════
+function spawnConfetti() {
+  const cols=['#ffd166','#06d6a0','#ef476f','#7b5ea7','#118ab2','#f9c5d5','#f48fb1'];
+  for(let i=0;i<32;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=cols[Math.floor(Math.random()*cols.length)];
+    el.style.animationDelay=Math.random()*0.7+'s';
+    el.style.transform=`rotate(${Math.random()*360}deg)`;
+    el.style.borderRadius=Math.random()>0.5?'50%':'3px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2500);
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('gradeDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('payoutDate').value = new Date().toISOString().split('T')[0];
+
+  // Start bunny animation
+  animateBunny();
+
+  // First AI message (async, non-blocking)
+  document.getElementById('petMessage').textContent = FALLBACK_MSGS[0];
+  newMessage();
+
+  renderAll();
+});
+</script>
+</body>
+</html>
