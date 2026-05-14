@@ -6,35 +6,44 @@
 <title id="pageTitle">✨ Bibble's Study Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-:root{
-  --purple:#7b5ea7;--purple2:#9b72d0;--sun:#ffd166;--leaf:#06d6a0;
-  --leaf2:#048a65;--bark:#8b5e3c;--accent:#ef476f;
-  --text:#2d3047;--text-light:#6b7280;--card:#ffffffee;
-  --radius:18px;--shadow:0 4px 24px rgba(45,48,71,0.10);
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root {
+  --purple:#7b5ea7; --purple2:#9b72d0; --purple-light:#ede9fe;
+  --sun:#ffd166; --sun2:#f59e0b;
+  --leaf:#06d6a0; --leaf2:#048a65;
+  --bark:#8b5e3c; --accent:#ef476f;
+  --text:#2d3047; --text-light:#6b7280;
+  --card:#ffffffee; --radius:18px;
+  --shadow:0 4px 24px rgba(45,48,71,0.10);
+  /* F1 theme overrides (applied via body.f1) */
 }
+body.f1 {
+  --purple:#e10600; --purple2:#ff3b38; --purple-light:#fff0f0;
+  --sun:#ffd700; --sun2:#f59e0b;
+  --leaf:#00d2be; --leaf2:#009f8e;
+  background: linear-gradient(180deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%) !important;
+}
+body.f1 .card { background:#1e2a3aee !important; color:#f0f0f0; }
+body.f1 .card-title, body.f1 .stat-lbl, body.f1 .design-label,
+body.f1 label, body.f1 .section-label { color:#ccc !important; }
+body.f1 input, body.f1 select, body.f1 textarea {
+  background:#1a2533 !important; color:#f0f0f0 !important; border-color:#334155 !important;
+}
+body.f1 .header h1 { text-shadow:3px 3px 0 #ff000044; }
+body.f1 .tab-btn { background:#1e2a3a; color:#9ca3af; }
+body.f1 .tab-btn.active { background:var(--purple); color:white; }
+body.f1 .stat-box { background:linear-gradient(135deg,#1e2a3a,#0f1f35); }
+body.f1 .stat-val { color:var(--sun) !important; }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;min-height:100vh;color:var(--text);overflow-x:hidden;transition:background 0.5s}
-body.fairy-mode{background:linear-gradient(180deg,#f0e6ff 0%,#ede9fe 40%,#e0f5f0 100%)}
-body.f1-mode{background:linear-gradient(180deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%)}
-body.f1-mode .card{background:#1e2a3a;color:#e0e6f0;border:1px solid #2d4060}
-body.f1-mode .card-title{color:#e10600}
-body.f1-mode .header h1{color:#e10600;text-shadow:2px 2px 0 #000}
-body.f1-mode .header .subtitle{color:#90a0b0}
-body.f1-mode .tab-btn{background:#1e2a3a;color:#90a0b0;border-color:#2d4060}
-body.f1-mode .tab-btn.active{background:#e10600;border-color:#e10600;color:white}
-body.f1-mode input,body.f1-mode select,body.f1-mode textarea{background:#0f1e30;border-color:#2d4060;color:#e0e6f0}
-body.f1-mode .progress-bar{background:#0f1e30}
-body.f1-mode .progress-fill{background:linear-gradient(90deg,#e10600,#ff6622)}
-body.f1-mode .stat-box{background:linear-gradient(135deg,#1e2a3a,#0f1e30)}
-body.f1-mode .stat-val{color:#e10600}
-body.f1-mode .msg-bubble{background:linear-gradient(135deg,#1e2a3a,#0f3460);border-color:#e10600;color:#e0e6f0}
-body.f1-mode .new-msg-btn{background:#e10600;color:white}
-body.f1-mode .section-label{border-color:#e10600;color:#e10600}
-body.f1-mode tr:hover td{background:#1e2a3a}
-body.f1-mode td{border-color:#2d4060}
-body.f1-mode th{background:#e10600}
-body.f1-mode .journey-map{background:linear-gradient(135deg,#1a0000,#2d0000);border:1px solid #e10600}
-body.f1-mode .assignment-item{background:#1e2a3a;border-left-color:#e10600}
+body {
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#f0e6ff 0%,#ede9fe 40%,#e0f5f0 100%);
+  min-height:100vh; color:var(--text); overflow-x:hidden;
+  transition:background 0.5s;
+}
 
 /* SKY */
 .sky-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -47,209 +56,222 @@ body.f1-mode .assignment-item{background:#1e2a3a;border-left-color:#e10600}
 .c3{width:150px;height:44px;top:5%;left:-170px;animation-duration:100s;animation-delay:-55s;opacity:0.35}
 .c3::before{width:70px;height:70px;top:-35px;left:20px}.c3::after{width:50px;height:50px;top:-22px;left:65px}
 @keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
-body.f1-mode .sky-bg{display:none}
 
-.app{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:20px 16px 60px}
-.header{text-align:center;padding:12px 0 4px}
-body.f1-mode .header::before{content:'';display:block;height:4px;background:repeating-linear-gradient(90deg,#e10600 0,#e10600 20px,#fff 20px,#fff 24px);margin-bottom:8px;border-radius:2px}
-.header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.6rem,5vw,2.5rem);color:var(--purple);text-shadow:3px 3px 0 #e0d0f5}
-.header .subtitle{font-size:0.86rem;color:var(--text-light);font-weight:600;margin-top:2px}
+/* F1 track dashes (shown in f1 mode) */
+body.f1 .sky-bg { background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,0.03) 40px,rgba(255,255,255,0.03) 41px); }
 
-/* COACH TOGGLE */
-.coach-toggle{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 12px;flex-wrap:wrap}
-.coach-btn{border:2.5px solid transparent;border-radius:50px;padding:6px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;transition:all 0.2s}
-.coach-btn.fairy{background:#ede9fe;color:var(--purple);border-color:#c4b5fd}
-.coach-btn.fairy.active{background:var(--purple);color:white;border-color:var(--purple)}
-.coach-btn.f1{background:#1e2a3a;color:#e10600;border-color:#e10600}
-.coach-btn.f1.active{background:#e10600;color:white}
-.coach-lbl{font-size:0.78rem;color:var(--text-light);font-weight:700}
+/* LAYOUT */
+.app{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.header{text-align:center;padding:12px 0 6px}
+.header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,6vw,2.8rem);color:var(--purple);text-shadow:3px 3px 0 #e0d0f5}
+.header .subtitle{font-size:0.9rem;color:var(--text-light);font-weight:600;margin-top:2px}
 
-.tabs{display:flex;gap:4px;justify-content:center;margin:0 0 14px;flex-wrap:wrap}
-.tab-btn{background:white;border:2.5px solid transparent;border-radius:50px;padding:5px 11px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;color:var(--text-light);transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+/* PERSONA TOGGLE */
+.persona-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 4px}
+.persona-toggle{display:flex;background:#e5e7eb;border-radius:50px;padding:3px;gap:2px}
+.persona-btn{background:none;border:none;border-radius:50px;padding:5px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;color:var(--text-light);transition:all 0.2s}
+.persona-btn.active{background:var(--purple);color:white;box-shadow:0 2px 8px rgba(123,94,167,0.3)}
+
+/* TABS */
+.tabs{display:flex;gap:5px;justify-content:center;margin:10px 0 14px;flex-wrap:wrap}
+.tab-btn{background:white;border:2.5px solid transparent;border-radius:50px;padding:6px 12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;color:var(--text-light);transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
 .tab-btn.active{background:var(--purple);color:white;border-color:var(--purple)}
 .tab-btn:hover:not(.active){border-color:var(--purple);color:var(--purple)}
 
+/* PANELS */
 .panel{display:none}.panel.active{display:block}
 
+/* CARD */
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px;backdrop-filter:blur(8px)}
-.card-title{font-family:'Fredoka One',cursive;font-size:1.08rem;color:var(--purple);margin-bottom:12px}
+.card-title{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--purple);margin-bottom:12px}
 
-/* SAFETY CAR */
-.safety-car-banner{display:none;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:12px;padding:12px 16px;margin:0 0 12px;border:2px solid var(--sun);text-align:center;font-weight:800;font-size:0.86rem}
-.safety-car-banner.show{display:block}
-body.f1-mode .safety-car-banner{background:linear-gradient(135deg,#1a0000,#2d0000);color:#ffd700;border-color:#ffd700}
-
+/* PET */
 .pet-scene{text-align:center;padding:6px 0 8px}
-.pet-mood{font-size:0.86rem;font-weight:700;color:var(--purple);margin-top:4px}
-.msg-bubble{background:linear-gradient(135deg,#f0ebff,#e8f5e9);border-radius:12px;padding:10px 14px;margin:8px 0;font-size:0.84rem;font-weight:600;color:var(--text);line-height:1.5;border-left:4px solid var(--purple);min-height:46px}
-.new-msg-btn{background:var(--sun);border:none;border-radius:50px;padding:6px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer;color:var(--bark)}
+.pet-mood{font-size:0.9rem;font-weight:700;color:var(--purple);margin-top:4px}
+.msg-bubble{background:linear-gradient(135deg,#f0ebff,#e8f5e9);border-radius:12px;padding:10px 14px;margin:8px 0;font-size:0.88rem;font-weight:600;color:var(--text);line-height:1.5;border-left:4px solid var(--purple);min-height:48px}
+body.f1 .msg-bubble{background:linear-gradient(135deg,#1a2533,#0f1f35);border-left-color:var(--accent);color:#e0e0e0}
+.new-msg-btn{background:var(--sun);border:none;border-radius:50px;padding:6px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:var(--bark);transition:transform 0.15s}
+.new-msg-btn:hover{transform:scale(1.05)}
 
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat-box{background:linear-gradient(135deg,#f0ebff,#e8f5e9);border-radius:12px;padding:9px 6px;text-align:center}
-.stat-val{font-family:'Fredoka One',cursive;font-size:1.35rem;color:var(--purple);line-height:1.1}
-.stat-lbl{font-size:0.66rem;font-weight:700;color:var(--text-light);margin-top:2px}
+.stat-box{background:linear-gradient(135deg,#f0ebff,#e8f5e9);border-radius:12px;padding:10px 6px;text-align:center}
+.stat-val{font-family:'Fredoka One',cursive;font-size:1.45rem;color:var(--purple);line-height:1.1}
+.stat-lbl{font-size:0.69rem;font-weight:700;color:var(--text-light);margin-top:2px}
 
-.gpa-box{border-radius:14px;padding:14px 16px;text-align:center;margin-bottom:12px}
-body.fairy-mode .gpa-box{background:linear-gradient(135deg,#f0ebff,#e8f5e9)}
-body.f1-mode .gpa-box{background:linear-gradient(135deg,#1a0000,#1e2a3a);border:1px solid #e10600}
-.gpa-val{font-family:'Fredoka One',cursive;font-size:2.2rem;color:var(--purple)}
-body.f1-mode .gpa-val{color:#e10600}
-.gpa-lbl{font-size:0.78rem;font-weight:700;color:var(--text-light)}
-
-.progress-label{font-size:0.74rem;font-weight:700;color:var(--text-light);margin-bottom:3px}
-.progress-bar{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+/* PROGRESS */
+.progress-label{font-size:0.78rem;font-weight:700;color:var(--text-light);margin-bottom:3px}
+.progress-bar{height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden}
 .progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--leaf),var(--sun));transition:width 0.5s}
 
-.grade-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-weight:800;font-size:0.8rem}
+/* GRADE PILLS */
+.grade-pill{display:inline-block;padding:2px 9px;border-radius:99px;font-weight:800;font-size:0.82rem}
 .g1{background:#d1fae5;color:#065f46}.g2{background:#dcfce7;color:#166534}
 .g3{background:#fef9c3;color:#854d0e}.g4{background:#fed7aa;color:#9a3412}
 .g5{background:#fee2e2;color:#991b1b}.g6{background:#fecaca;color:#7f1d1d}
-.mean-highlight{font-family:'Fredoka One',cursive;font-size:0.95rem}
+.mean-highlight{font-family:'Fredoka One',cursive;font-size:1rem}
 
+/* TABLE */
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:0.82rem}
-th{background:var(--purple);color:white;padding:7px 8px;text-align:left;font-weight:800;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:0.84rem}
+th{background:var(--purple);color:white;padding:8px 9px;text-align:left;font-weight:800;white-space:nowrap}
 th:first-child{border-radius:8px 0 0 0}th:last-child{border-radius:0 8px 0 0}
-td{padding:6px 8px;border-bottom:1px solid #f0f0f0}
+td{padding:7px 9px;border-bottom:1px solid #f0f0f0}
 tr:last-child td{border-bottom:none}tr:hover td{background:#f7f3ff}
+body.f1 th{background:var(--accent)}
+body.f1 td{border-bottom-color:#334155}
+body.f1 tr:hover td{background:#1e2a3a}
 
+/* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:480px){.form-grid{grid-template-columns:1fr}}
 .field{display:flex;flex-direction:column;gap:4px}
 .field.full{grid-column:1/-1}
-label{font-size:0.76rem;font-weight:800;color:var(--text-light)}
-input,select,textarea{border:2px solid #e5e7eb;border-radius:9px;padding:7px 10px;font-family:'Nunito',sans-serif;font-size:0.86rem;color:var(--text);outline:none;transition:border-color 0.2s;background:white}
+label{font-size:0.8rem;font-weight:800;color:var(--text-light)}
+input,select,textarea{border:2px solid #e5e7eb;border-radius:9px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s;background:white}
 input:focus,select:focus,textarea:focus{border-color:var(--purple)}
-textarea{resize:vertical;min-height:56px}
+textarea{resize:vertical;min-height:60px}
 
-.btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:50px;padding:9px 20px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.86rem;cursor:pointer;box-shadow:0 4px 14px rgba(123,94,167,0.3);transition:transform 0.15s}
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:50px;padding:10px 22px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer;box-shadow:0 4px 14px rgba(123,94,167,0.3);transition:transform 0.15s}
 .btn-primary:hover{transform:translateY(-2px)}
-.btn-danger{background:#fee2e2;color:#991b1b;border:none;border-radius:7px;padding:3px 8px;font-size:0.72rem;font-weight:700;cursor:pointer}
-.btn-payout{background:linear-gradient(135deg,var(--leaf),#04a07a);color:white;border:none;border-radius:50px;padding:8px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.84rem;cursor:pointer}
-.btn-ical{background:linear-gradient(135deg,#0071c5,#005fa3);color:white;border:none;border-radius:7px;padding:3px 9px;font-size:0.7rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif}
-.success-flash{background:#d1fae5;color:#065f46;border-radius:9px;padding:8px 12px;font-weight:700;font-size:0.82rem;margin-top:8px;display:none}
+.btn-sm{padding:6px 14px;font-size:0.8rem}
+.btn-danger{background:#fee2e2;color:#991b1b;border:none;border-radius:7px;padding:3px 9px;font-size:0.76rem;font-weight:700;cursor:pointer}
+.btn-payout{background:linear-gradient(135deg,var(--leaf),#04a07a);color:white;border:none;border-radius:50px;padding:9px 20px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.86rem;cursor:pointer;box-shadow:0 3px 12px rgba(6,214,160,0.3);transition:transform 0.15s}
+.btn-payout:hover{transform:translateY(-2px)}
+.success-flash{background:#d1fae5;color:#065f46;border-radius:9px;padding:9px 12px;font-weight:700;font-size:0.85rem;margin-top:8px;display:none}
 
-.semester-banner{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border-radius:var(--radius);padding:9px 14px;font-weight:800;font-size:0.86rem;margin-bottom:12px}
-.topic-badge{display:inline-block;background:#ede9fe;color:var(--purple);border-radius:7px;padding:2px 7px;font-size:0.7rem;font-weight:700;margin:2px}
-.section-label{font-family:'Fredoka One',cursive;font-size:0.9rem;color:var(--purple);margin:12px 0 7px;border-left:4px solid var(--sun);padding-left:9px}
+/* SECTION LABEL */
+.section-label{font-family:'Fredoka One',cursive;font-size:0.95rem;color:var(--purple);margin:12px 0 7px;border-left:4px solid var(--sun);padding-left:9px}
+.semester-banner{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border-radius:var(--radius);padding:10px 16px;font-weight:800;font-size:0.9rem;margin-bottom:12px}
+.topic-badge{display:inline-block;background:#ede9fe;color:var(--purple);border-radius:7px;padding:2px 7px;font-size:0.73rem;font-weight:700;margin:2px}
+
+/* POINTS */
+.points-box{background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.points-total{font-family:'Fredoka One',cursive;font-size:2rem;color:#78350f;text-align:center}
+.points-lbl{font-size:0.82rem;font-weight:700;color:#92400e;text-align:center;margin-bottom:4px}
+.points-how{font-size:0.76rem;color:#a16207;font-weight:600;text-align:center;line-height:1.5}
 
 /* DUAL POINTS */
-.dual-pts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.pts-box{border-radius:12px;padding:10px;text-align:center}
-.pts-box.achievement{background:linear-gradient(135deg,#fef9c3,#fde68a)}
+.dual-pts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pts-box{border-radius:14px;padding:12px;text-align:center}
+.pts-box.achieve{background:linear-gradient(135deg,#fef9c3,#fde68a)}
 .pts-box.grit{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
-.pts-box-val{font-family:'Fredoka One',cursive;font-size:1.5rem;line-height:1}
-.pts-box.achievement .pts-box-val{color:#78350f}
-.pts-box.grit .pts-box-val{color:#5b21b6}
-.pts-box-lbl{font-size:0.66rem;font-weight:800;color:var(--text-light);margin-top:3px}
+.pts-val{font-family:'Fredoka One',cursive;font-size:1.6rem}
+.pts-box.achieve .pts-val{color:#78350f}
+.pts-box.grit .pts-val{color:var(--purple)}
+.pts-lbl{font-size:0.72rem;font-weight:800;color:var(--text-light);margin-top:2px}
 
+/* EURO */
 .payout-totals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.payout-box{border-radius:12px;padding:9px 6px;text-align:center}
+.payout-box{border-radius:12px;padding:10px 6px;text-align:center}
 .payout-box.earned{background:linear-gradient(135deg,#ede9fe,#ddd6fe)}
 .payout-box.paidout{background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
 .payout-box.owed{background:linear-gradient(135deg,#fef9c3,#fde68a)}
-.payout-val{font-family:'Fredoka One',cursive;font-size:1.35rem;line-height:1.1}
+.payout-val{font-family:'Fredoka One',cursive;font-size:1.4rem;line-height:1.1}
 .payout-box.earned .payout-val{color:var(--purple)}
 .payout-box.paidout .payout-val{color:var(--leaf2)}
 .payout-box.owed .payout-val{color:var(--bark)}
-.payout-lbl{font-size:0.66rem;font-weight:800;color:var(--text-light);margin-top:2px}
-.payout-entry{display:flex;align-items:center;justify-content:space-between;background:#f0fdf4;border-radius:9px;padding:6px 10px;margin:4px 0;font-size:0.78rem}
+.payout-lbl{font-size:0.68rem;font-weight:800;color:var(--text-light);margin-top:2px}
+.payout-entry{display:flex;align-items:center;justify-content:space-between;background:#f0fdf4;border-radius:9px;padding:7px 11px;margin:4px 0;font-size:0.82rem}
 .p-amount{font-family:'Fredoka One',cursive;color:var(--leaf2);font-size:0.95rem}
-.p-meta{color:var(--text-light);font-weight:600;font-size:0.72rem}
-.reward-chip{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:99px;padding:2px 9px;font-weight:800;font-size:0.78rem;color:var(--bark);margin:3px}
+.p-meta{color:var(--text-light);font-weight:600;font-size:0.74rem}
+.reward-chip{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:99px;padding:3px 10px;font-weight:800;font-size:0.8rem;color:var(--bark);margin:3px}
 
-.accessory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px}
-.acc-item{text-align:center;background:#f7f3ff;border-radius:10px;padding:7px 3px;cursor:pointer;border:2.5px solid transparent;transition:all 0.2s}
+/* SHOP */
+.accessory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.acc-item{text-align:center;background:#f7f3ff;border-radius:11px;padding:7px 4px;cursor:pointer;border:2.5px solid transparent;transition:all 0.2s}
 .acc-item.owned{border-color:var(--leaf);background:#d1fae5}
 .acc-item.equipped{border-color:var(--sun);background:#fef9c3}
-.acc-item.locked{opacity:0.42;cursor:not-allowed}
-.acc-emoji{font-size:1.5rem}.acc-name{font-size:0.64rem;font-weight:700;color:var(--text-light);margin-top:2px}
-.acc-cost{font-size:0.62rem;color:var(--bark);font-weight:800}
+.acc-item.locked{opacity:0.45;cursor:not-allowed}
+.acc-emoji{font-size:1.5rem}.acc-name{font-size:0.67rem;font-weight:700;color:var(--text-light);margin-top:2px}
+.acc-cost{font-size:0.65rem;color:var(--bark);font-weight:800}
 
-.wish-item{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:11px;padding:8px 12px;margin:5px 0}
-.wish-info{flex:1}.wish-name{font-weight:800;font-size:0.84rem}
-.wish-progress{font-size:0.72rem;color:var(--bark);font-weight:700;margin-top:2px}
-.wish-progress-bar{height:6px;background:#fde68a;border-radius:99px;margin-top:3px;overflow:hidden}
+/* WISH LIST */
+.wish-item{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:11px;padding:9px 12px;margin:5px 0}
+.wish-info{flex:1}.wish-name{font-weight:800;font-size:0.86rem}
+.wish-progress{font-size:0.74rem;color:var(--bark);font-weight:700;margin-top:2px}
+.wish-progress-bar{height:7px;background:#fde68a;border-radius:99px;margin-top:3px;overflow:hidden}
 .wish-progress-fill{height:100%;background:linear-gradient(90deg,var(--leaf),var(--sun));border-radius:99px;transition:width 0.4s}
 
+/* DESIGN */
 .design-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.design-grid{grid-template-columns:1fr}}
 .design-group{display:flex;flex-direction:column;gap:5px}
-.design-label{font-size:0.74rem;font-weight:800;color:var(--text-light)}
+.design-label{font-size:0.78rem;font-weight:800;color:var(--text-light)}
 .swatch-row{display:flex;flex-wrap:wrap;gap:5px}
-.swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:3px solid transparent;box-shadow:0 2px 5px rgba(0,0,0,0.12);transition:transform 0.15s,border-color 0.15s}
+.swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:transform 0.15s,border-color 0.15s}
 .swatch:hover{transform:scale(1.18)}.swatch.selected{border-color:var(--purple);transform:scale(1.22)}
-.custom-color-input{width:32px;height:24px;border:2px solid #e5e7eb;border-radius:7px;cursor:pointer;padding:1px}
+.custom-color-input{width:34px;height:26px;border:2px solid #e5e7eb;border-radius:7px;cursor:pointer;padding:1px;background:none}
 
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;margin-top:8px}
-.skill-badge{text-align:center;border-radius:14px;padding:9px 5px;border:2.5px solid transparent}
+/* SKILLS */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin-top:8px}
+.skill-badge{text-align:center;border-radius:14px;padding:10px 6px;border:2.5px solid transparent}
 .skill-badge.unlocked{background:linear-gradient(135deg,#fef9c3,#fde68a);border-color:var(--sun)}
-.skill-badge.locked{background:#f3f4f6;opacity:0.42}
-.skill-emoji{font-size:1.6rem}.skill-name{font-size:0.64rem;font-weight:800;color:var(--bark);margin-top:3px}
-.skill-desc{font-size:0.58rem;color:var(--text-light);margin-top:1px;font-weight:600}
+.skill-badge.locked{background:#f3f4f6;opacity:0.4}
+.skill-emoji{font-size:1.7rem}.skill-name{font-size:0.67rem;font-weight:800;color:var(--bark);margin-top:3px}
+.skill-desc{font-size:0.6rem;color:var(--text-light);margin-top:1px;font-weight:600}
 
-.journey-map{background:linear-gradient(135deg,#1a0533,#2d0f5e);border-radius:18px;padding:16px;margin-bottom:12px;overflow:hidden}
-.journey-title{font-family:'Fredoka One',cursive;color:white;font-size:1rem;text-align:center;margin-bottom:12px}
-.journey-path{display:flex;align-items:center;justify-content:center;overflow-x:auto;padding-bottom:4px}
-.journey-stage{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:48px}
-.journey-stage-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;border:3px solid rgba(255,255,255,0.18);transition:all 0.3s}
-.journey-stage-icon.done{background:linear-gradient(135deg,#ffd166,#f59e0b);border-color:#ffd166;box-shadow:0 0 12px #ffd16688}
-.journey-stage-icon.current{background:linear-gradient(135deg,#7b5ea7,#9b72d0);border-color:white;box-shadow:0 0 16px #9b72d0aa;animation:glowPulse 2s ease-in-out infinite}
-body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e10600,#ff4422);box-shadow:0 0 16px #e1060088}
+/* JOURNEY */
+.journey-map{background:linear-gradient(135deg,#1a0533,#2d0f5e);border-radius:18px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+body.f1 .journey-map{background:linear-gradient(135deg,#1a0000,#3d0000)}
+.journey-title{font-family:'Fredoka One',cursive;color:white;font-size:1.05rem;text-align:center;margin-bottom:14px}
+.journey-path{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;gap:0}
+.journey-stage{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:54px}
+.journey-stage-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:3px solid rgba(255,255,255,0.2);transition:all 0.3s}
+.journey-stage-icon.done{background:linear-gradient(135deg,#ffd166,#f59e0b);border-color:#ffd166;box-shadow:0 0 14px #ffd16688}
+.journey-stage-icon.current{background:linear-gradient(135deg,#7b5ea7,#9b72d0);border-color:white;box-shadow:0 0 18px #9b72d0aa;animation:glowPulse 2s ease-in-out infinite}
+body.f1 .journey-stage-icon.current{background:linear-gradient(135deg,#e10600,#ff3b38);box-shadow:0 0 18px #e1060088}
 .journey-stage-icon.future{background:rgba(255,255,255,0.08)}
-.journey-stage-name{font-size:0.52rem;font-weight:800;color:rgba(255,255,255,0.6);text-align:center;max-width:46px;line-height:1.2}
-.journey-stage-name.current-name{color:white}
-.journey-connector{width:14px;height:3px;border-radius:99px;flex-shrink:0;margin-bottom:14px}
+.journey-stage-name{font-size:0.55rem;font-weight:800;color:rgba(255,255,255,0.65);text-align:center;max-width:52px;line-height:1.2}
+.journey-stage-name.cn{color:white}
+.journey-connector{width:16px;height:3px;border-radius:99px;flex-shrink:0;margin-bottom:16px}
 .journey-connector.done-line{background:linear-gradient(90deg,#ffd166,#f59e0b)}
-.journey-connector.future-line{background:rgba(255,255,255,0.14)}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 16px #9b72d0aa}50%{box-shadow:0 0 26px #c4b5fdcc}}
+.journey-connector.future-line{background:rgba(255,255,255,0.15)}
+.journey-sem-label{font-size:0.56rem;color:rgba(255,255,255,0.45);text-align:center;font-weight:700;margin-top:1px}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 18px #9b72d0aa}50%{box-shadow:0 0 28px #c4b5fdcc}}
 
-/* MH */
-.mh-scale{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-.mh-btn{background:#f3f4f6;border:2.5px solid transparent;border-radius:10px;padding:7px 3px;cursor:pointer;font-size:1.1rem;min-width:34px;text-align:center;transition:all 0.2s}
-.mh-btn:hover{transform:scale(1.12)}.mh-btn.selected{border-color:var(--purple);background:#ede9fe;transform:scale(1.14)}
-.mh-score-label{font-family:'Fredoka One',cursive;font-size:1.35rem;text-align:center;margin:4px 0}
-.mh-type-row{display:flex;gap:8px;justify-content:center;margin:8px 0}
-.mh-type-btn{border:2.5px solid #e5e7eb;border-radius:50px;padding:5px 12px;font-weight:800;font-size:0.76rem;cursor:pointer;background:white;font-family:'Nunito',sans-serif;transition:all 0.2s;text-align:center;line-height:1.4}
-.mh-type-btn.active{background:var(--purple);color:white;border-color:var(--purple)}
-.mh-history-item{display:flex;align-items:center;gap:8px;background:#f7f3ff;border-radius:9px;padding:6px 10px;margin:4px 0;font-size:0.78rem}
-.mh-emoji{font-size:1.3rem;min-width:26px;text-align:center}
-.gratitude-item{background:linear-gradient(135deg,#fef9c3,#fff);border-radius:10px;padding:7px 12px;margin:4px 0;font-size:0.82rem;font-weight:600;border-left:3px solid var(--sun)}
+/* MENTAL HEALTH */
+.mh-weather-row{display:flex;justify-content:space-between;align-items:center;margin:10px 0;gap:4px}
+.mh-icon{font-size:1.6rem;cursor:pointer;border-radius:10px;padding:4px 6px;transition:all 0.2s;border:2px solid transparent;text-align:center;flex:1}
+.mh-icon:hover{transform:scale(1.15)}
+.mh-icon.sel{border-color:var(--purple);background:var(--purple-light);transform:scale(1.2)}
+.mh-score-display{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--purple);text-align:center;margin-top:6px}
+.mh-safety-car{background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:12px;padding:12px 14px;margin-top:10px;display:none;border-left:4px solid var(--sun2)}
+.mh-safety-car.show{display:block}
+.stress-toggle{display:flex;gap:8px;margin:8px 0}
+.stress-btn{flex:1;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;padding:8px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;transition:all 0.2s;text-align:center}
+.stress-btn.active{background:var(--purple-light);border-color:var(--purple);color:var(--purple)}
+.gratitude-entry{background:#f0fdf4;border-radius:10px;padding:8px 11px;margin:4px 0;font-size:0.84rem;font-weight:600;color:#065f46;border-left:3px solid var(--leaf)}
 
-.assignment-item{background:#f7f3ff;border-radius:12px;padding:9px 13px;margin:6px 0;border-left:4px solid var(--purple)}
-.assignment-item.overdue{border-left-color:var(--accent);background:#fff1f2}
-.assignment-item.due-soon{border-left-color:var(--sun);background:#fffbeb}
-.assignment-title{font-weight:800;font-size:0.86rem}
-.assignment-meta{font-size:0.72rem;color:var(--text-light);font-weight:600;margin-top:2px}
-.assignment-actions{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
-.diff-badge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:0.68rem;font-weight:800}
+/* ASSIGNMENTS */
+.assignment-card{background:linear-gradient(135deg,#f7f3ff,#ede9fe);border-radius:14px;padding:12px;margin:6px 0;border-left:4px solid var(--purple);position:relative}
+.assignment-card.overdue{border-left-color:var(--accent);background:linear-gradient(135deg,#fff5f5,#fee2e2)}
+.assignment-card.done{opacity:0.5;text-decoration:line-through}
+.asgn-title{font-weight:800;font-size:0.9rem;margin-bottom:2px}
+.asgn-meta{font-size:0.76rem;color:var(--text-light);font-weight:600}
+.asgn-diff{display:inline-block;padding:1px 8px;border-radius:99px;font-size:0.7rem;font-weight:800;margin-top:4px}
 .diff-easy{background:#d1fae5;color:#065f46}.diff-medium{background:#fef9c3;color:#854d0e}.diff-hard{background:#fee2e2;color:#991b1b}
-.grit-award{display:inline-flex;align-items:center;gap:4px;background:#ede9fe;border-radius:99px;padding:2px 8px;font-size:0.7rem;font-weight:800;color:var(--purple)}
+.grit-award-btn{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:99px;padding:4px 12px;font-size:0.76rem;font-weight:800;cursor:pointer;margin-top:6px;font-family:'Nunito',sans-serif}
 
-.ratio-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
-.ratio-label{font-size:0.78rem;font-weight:800;color:var(--text-light)}
-
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-top:10px}
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:10px}
 .gallery-item{background:#f7f3ff;border-radius:12px;overflow:hidden;border:2px solid #e4d9f9;transition:transform 0.2s}
 .gallery-item:hover{transform:scale(1.03)}
 .gallery-thumb{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
 .gallery-meta{padding:6px 8px}
-.gallery-subject{font-size:0.7rem;font-weight:800;color:var(--purple)}
-.gallery-date{font-size:0.62rem;color:var(--text-light);font-weight:600}
-.gallery-dl{background:var(--purple);color:white;border:none;border-radius:7px;padding:3px 8px;font-size:0.64rem;font-weight:800;cursor:pointer;width:100%;margin-top:4px;font-family:'Nunito',sans-serif}
+.gallery-subject{font-size:0.72rem;font-weight:800;color:var(--purple)}
+.gallery-date{font-size:0.64rem;color:var(--text-light);font-weight:600}
+.gallery-dl{background:var(--purple);color:white;border:none;border-radius:7px;padding:4px 8px;font-size:0.68rem;font-weight:800;cursor:pointer;width:100%;margin-top:4px;font-family:'Nunito',sans-serif}
 
-.privacy-row{display:flex;align-items:center;gap:10px;margin:8px 0}
-.privacy-toggle{position:relative;width:42px;height:22px}
-.privacy-toggle input{opacity:0;width:0;height:0}
-.privacy-slider{position:absolute;cursor:pointer;inset:0;background:#e5e7eb;border-radius:99px;transition:0.3s}
-.privacy-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
-.privacy-toggle input:checked+.privacy-slider{background:var(--leaf)}
-.privacy-toggle input:checked+.privacy-slider::before{transform:translateX(20px)}
-.privacy-label{font-size:0.78rem;font-weight:700;color:var(--text-light)}
-
+/* MOST IMPROVED */
 #mostImprovedCard{display:none}
+
+/* CONFETTI */
 .confetti-piece{position:fixed;width:9px;height:9px;top:-10px;border-radius:2px;animation:fall 2.2s ease-in forwards;pointer-events:none;z-index:9999}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
+/* MODALS */
 @keyframes popIn{from{transform:scale(0.65);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .modal-backdrop{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,10,40,0.78);backdrop-filter:blur(6px);align-items:center;justify-content:center;overflow-y:auto}
@@ -257,40 +279,71 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
 .modal-card{max-width:370px;width:92%;margin:auto;background:white;border-radius:26px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1)}
 .modal-body{padding:18px 20px 20px}
 .modal-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-.btn-modal-save{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:50px;padding:8px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.84rem;cursor:pointer}
-.btn-modal-close{background:#f3f4f6;border:none;border-radius:50px;padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.84rem;cursor:pointer;color:var(--text-light)}
+.btn-modal-save{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:50px;padding:8px 20px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer}
+.btn-modal-close{background:#f3f4f6;border:none;border-radius:50px;padding:8px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer;color:var(--text-light)}
+
+/* GPA WEIGHTED */
+.gpa-badge{font-family:'Fredoka One',cursive;font-size:2.5rem;text-align:center;padding:12px 0 4px}
+.gpa-label{text-align:center;font-size:0.8rem;font-weight:700;color:var(--text-light);margin-bottom:8px}
+
+/* STRATEGY */
+.stint-card{background:#f7f3ff;border-radius:12px;padding:10px 14px;margin:6px 0;border-left:4px solid var(--purple);position:relative}
+body.f1 .stint-card{background:#1e2a3a;border-left-color:var(--accent)}
+.stint-card.done-stint{opacity:0.55;border-left-color:var(--leaf)}
+.stint-day-header{font-family:'Fredoka One',cursive;font-size:0.95rem;color:var(--purple);margin:14px 0 6px;display:flex;align-items:center;gap:8px}
+body.f1 .stint-day-header{color:var(--sun)}
+.stint-topic{font-weight:800;font-size:0.88rem;margin-bottom:2px}
+.stint-meta{font-size:0.75rem;color:var(--text-light);font-weight:600}
+.stint-hours{display:inline-block;background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:99px;padding:1px 9px;font-size:0.72rem;font-weight:800;color:var(--bark);margin-left:6px}
+.stint-actions{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
+.stint-done-btn{background:#d1fae5;border:none;border-radius:99px;padding:3px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;color:var(--leaf2);font-family:'Nunito',sans-serif}
+.stint-done-btn.undone{background:#f3f4f6;color:var(--text-light)}
+.pitwall-today{background:linear-gradient(135deg,#fce4ec,#ede9fe);border-radius:12px;padding:10px 14px;margin:4px 0;display:flex;align-items:center;gap:10px}
+.pitwall-priority{font-family:'Fredoka One',cursive;font-size:1.1rem;min-width:28px;text-align:center}
+.pitwall-info{flex:1}
+.pitwall-task{font-weight:800;font-size:0.86rem}
+.pitwall-sub{font-size:0.74rem;color:var(--text-light);font-weight:600}
+
+/* VERSION */
+.version-tag{text-align:center;font-size:0.68rem;color:#c4b5fd;padding:16px 0 4px;font-weight:700}
 </style>
 </head>
-<body class="fairy-mode">
+<body>
+
 <div class="sky-bg">
   <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
 </div>
+
 <div class="app">
   <div class="header">
     <h1 id="appTitle">✨ Bibble's Study Tracker</h1>
     <div class="subtitle" id="appSubtitle">Your magical study companion ✨</div>
   </div>
-  <div class="coach-toggle">
-    <span class="coach-lbl">Coach:</span>
-    <button class="coach-btn fairy active" id="btnFairy" onclick="setCoach('fairy')">🧚 Fairytale Mentor</button>
-    <button class="coach-btn f1" id="btnF1" onclick="setCoach('f1')">🏎️ F1 Race Engineer</button>
+
+  <!-- PERSONA TOGGLE -->
+  <div class="persona-bar">
+    <span style="font-size:0.8rem;font-weight:700;color:var(--text-light);">Coach mode:</span>
+    <div class="persona-toggle">
+      <button class="persona-btn active" id="personaFairy" onclick="setPersona('fairy')">🧚 Fairytale Mentor</button>
+      <button class="persona-btn" id="personaF1" onclick="setPersona('f1')">🏎️ F1 Race Engineer</button>
+    </div>
   </div>
-  <div class="safety-car-banner" id="safetyCarBanner">
-    <div id="safetyCarMsg">🌿 Bibble says: Take it easy today. Rest is part of the journey!</div>
-  </div>
+
+  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('home',this)">🏠 Home</button>
     <button class="tab-btn" onclick="switchTab('grades',this)">📊 Grades</button>
-    <button class="tab-btn" onclick="switchTab('tasks',this)">📋 Tasks</button>
     <button class="tab-btn" onclick="switchTab('add',this)">➕ Add</button>
+    <button class="tab-btn" onclick="switchTab('tasks',this)">📋 Tasks</button>
+    <button class="tab-btn" onclick="switchTab('strategy',this)">🏎️ Strategy</button>
+    <button class="tab-btn" onclick="switchTab('wellbeing',this)">🌤️ Wellbeing</button>
     <button class="tab-btn" onclick="switchTab('rewards',this)">💰 Rewards</button>
-    <button class="tab-btn" onclick="switchTab('mindset',this)">💙 Mindset</button>
     <button class="tab-btn" onclick="switchTab('design',this)">🎨 Design</button>
     <button class="tab-btn" onclick="switchTab('gallery',this)">🖼️ Gallery</button>
     <button class="tab-btn" onclick="switchTab('setup',this)">⚙️ Setup</button>
   </div>
 
-  <!-- HOME -->
+  <!-- ════ HOME ════ -->
   <div class="panel active" id="panel-home">
     <div class="card">
       <div class="pet-scene">
@@ -300,100 +353,141 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
         <button class="new-msg-btn" onclick="newMessage()">🎲 New message</button>
       </div>
     </div>
-    <div class="gpa-box">
-      <div class="gpa-lbl" id="gpaLabel">Weighted GPA</div>
-      <div class="gpa-val" id="gpaValue">—</div>
-      <div style="font-size:0.7rem;color:var(--text-light);font-weight:600;" id="gpaBreakdown"></div>
+
+    <!-- Safety Car / Resting Cave protocol banner -->
+    <div id="safetyCar" class="mh-safety-car" style="display:none;margin-bottom:14px;">
+      <div id="safetyCarMsg" style="font-weight:800;font-size:0.92rem;"></div>
+      <div style="font-size:0.82rem;font-weight:600;margin-top:4px;color:var(--bark);">Remember: rest is part of the race. You'll be back stronger! 💛</div>
     </div>
+
+    <!-- MH QUICK CHECK-IN (Home inline widget) -->
+    <div class="card" style="padding:12px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-family:'Fredoka One',cursive;font-size:0.95rem;color:var(--purple);" id="homeMhTitle">🌤️ How are you feeling?</div>
+        <div style="font-size:0.76rem;font-weight:700;color:var(--text-light);" id="homeMhScore">tap to check in</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:3px;" id="homeMhRow">
+        <div class="mh-icon" onclick="setMHScore(1,this)" title="1">⛈️<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">1</div></div>
+        <div class="mh-icon" onclick="setMHScore(2,this)" title="2">🌧️<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">2</div></div>
+        <div class="mh-icon" onclick="setMHScore(3,this)" title="3">🌦️<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">3</div></div>
+        <div class="mh-icon" onclick="setMHScore(4,this)" title="4">⛅<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">4</div></div>
+        <div class="mh-icon" onclick="setMHScore(5,this)" title="5">🌤️<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">5</div></div>
+        <div class="mh-icon" onclick="setMHScore(6,this)" title="6">☀️<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">6</div></div>
+        <div class="mh-icon" onclick="setMHScore(7,this)" title="7">🌈<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">7</div></div>
+        <div class="mh-icon" onclick="setMHScore(8,this)" title="8">⭐<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">8</div></div>
+        <div class="mh-icon" onclick="setMHScore(9,this)" title="9">🌟<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">9</div></div>
+        <div class="mh-icon" onclick="setMHScore(10,this)" title="10">🔆<div style="font-size:0.5rem;font-weight:700;margin-top:1px;">10</div></div>
+      </div>
+      <div id="homeMhCopingMsg" style="display:none;margin-top:8px;background:#f0ebff;border-radius:9px;padding:8px 11px;font-size:0.82rem;font-weight:600;color:var(--purple);line-height:1.5;"></div>
+    </div>
+
+    <!-- GRIT SELF-AWARD BUTTON -->
+    <div class="card" style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;">
+        <div style="font-family:'Fredoka One',cursive;font-size:0.95rem;color:var(--purple);">💪 Award Yourself Grit!</div>
+        <div style="font-size:0.78rem;font-weight:600;color:var(--text-light);margin-top:2px;">Did you work hard today — even when it was tough?</div>
+      </div>
+      <button onclick="selfAwardGrit()" style="background:linear-gradient(135deg,#7b5ea7,#9b72d0);color:white;border:none;border-radius:50px;padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.84rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">✨ +5 Grit</button>
+    </div>
+
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-val" id="statPoints" style="color:#b45309;">⭐ 0</div><div class="stat-lbl">Shop Points</div></div>
-      <div class="stat-box"><div class="stat-val" id="statGrit" style="color:#5b21b6;">💜 0</div><div class="stat-lbl">Grit Points</div></div>
-      <div class="stat-box"><div class="stat-val" id="statEuros">€0</div><div class="stat-lbl">Euros Owed</div></div>
+      <div class="stat-box"><div class="stat-val" id="statGPA">—</div><div class="stat-lbl">Weighted GPA</div></div>
+      <div class="stat-box"><div class="stat-val" id="statPoints" style="color:#b45309;">⭐ 0</div><div class="stat-lbl">Total Points</div></div>
+      <div class="stat-box"><div class="stat-val" id="statEuros">€0</div><div class="stat-lbl">Euros Owed 💶</div></div>
     </div>
-    <div class="card" style="padding:11px 16px;">
-      <div class="progress-label">✨ Level <span id="petLevel">1</span> — <span id="pointsToNext"></span> pts to Level <span id="petLevelNext">2</span></div>
+
+    <div class="dual-pts-row">
+      <div class="pts-box achieve">
+        <div class="pts-val" id="achievePtsDisplay">⭐ 0</div>
+        <div class="pts-lbl">Achievement Points (grades)</div>
+      </div>
+      <div class="pts-box grit">
+        <div class="pts-val" id="gritPtsDisplay">💪 0</div>
+        <div class="pts-lbl">Grit Points (effort)</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:12px 16px;">
+      <div class="progress-label">✨ Level <span id="petLevel">1</span> — <span id="pointsToNext"></span> pts to Level <span id="nextLevel">2</span></div>
       <div class="progress-bar"><div class="progress-fill" id="pointsBar" style="width:0%"></div></div>
-      <div style="font-size:0.7rem;color:var(--text-light);margin-top:3px;font-weight:600;" id="pointsLabel">0 / 100 pts</div>
+      <div style="font-size:0.74rem;color:var(--text-light);margin-top:3px;font-weight:600;" id="pointsLabel">0 / 100 pts</div>
     </div>
+
+    <!-- FAIRYTALE JOURNEY -->
     <div class="journey-map" id="journeyMap">
       <div class="journey-title" id="journeyTitle">🗺️ Bibble's Fairytale Adventure</div>
       <div class="journey-path" id="journeyPath"></div>
-      <div style="text-align:center;margin-top:8px;font-size:0.72rem;color:rgba(255,255,255,0.6);font-weight:700;" id="journeyStatus"></div>
+      <div style="text-align:center;margin-top:10px;font-size:0.74rem;color:rgba(255,255,255,0.6);font-weight:700;" id="journeyStatus"></div>
     </div>
-    <div class="card">
+
+    <!-- BIBBLE SKILLS -->
+    <div class="card" id="skillsCard">
       <div class="card-title">✨ Bibble's Unlocked Skills</div>
-      <div style="font-size:0.76rem;color:var(--text-light);font-weight:600;margin-bottom:8px;" id="skillsSubtitle">Earn a Grade 1 (Sehr gut) to unlock a new magic skill!</div>
+      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:8px;">Earn a Grade 1 (Sehr gut) to unlock a new magic skill!</div>
       <div class="skills-grid" id="skillsGrid"></div>
     </div>
+
     <div class="card">
       <div class="card-title">📚 Subject Overview</div>
-      <div id="subjectOverview"><div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">Set up subjects in ⚙️ Setup first!</div></div>
+      <div id="subjectOverview"><div style="color:var(--text-light);font-size:0.88rem;font-weight:600;">Set up subjects in ⚙️ Setup first!</div></div>
     </div>
+
     <div class="card" id="mostImprovedCard">
       <div class="card-title">📈 Most Improved</div>
       <div id="mostImprovedContent"></div>
     </div>
   </div>
 
-  <!-- GRADES -->
+  <!-- ════ GRADES ════ -->
   <div class="panel" id="panel-grades">
     <div class="card">
       <div class="card-title">📊 All Grades</div>
       <div id="semesterBannerGrades"></div>
-      <div style="margin-bottom:10px;">
-        <button class="btn-primary" style="padding:7px 14px;font-size:0.78rem;" onclick="openRecapModal()">🏆 Semester Recap</button>
+      <div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-primary btn-sm" onclick="openRecapModal()">🏆 Semester Recap</button>
+        <button class="btn-primary btn-sm" style="background:linear-gradient(135deg,var(--leaf),#04a07a);" onclick="exportIcal()">📅 Export to iCal</button>
       </div>
       <div class="table-wrap">
-        <table><thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Topic</th><th>Grade</th><th>⭐</th><th>€</th><th></th></tr></thead>
-        <tbody id="gradeTableBody"></tbody></table>
+        <table>
+          <thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Topic</th><th>Grade</th><th>⭐</th><th>€</th><th></th></tr></thead>
+          <tbody id="gradeTableBody"></tbody>
+        </table>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">📈 Means per Subject</div>
+      <div class="card-title">📈 Weighted Means per Subject</div>
+      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:8px;">Written vs Oral ratio set in ⚙️ Setup.</div>
       <div class="table-wrap">
-        <table><thead><tr><th>Subject</th><th>Written</th><th>Oral</th><th>Weighted</th></tr></thead>
-        <tbody id="meanTableBody"></tbody></table>
+        <table>
+          <thead><tr><th>Subject</th><th>Written</th><th>Oral</th><th>Weighted GPA</th></tr></thead>
+          <tbody id="meanTableBody"></tbody>
+        </table>
       </div>
+      <div class="gpa-badge" id="overallGPABadge">—</div>
+      <div class="gpa-label" id="overallGPALabel">Overall Weighted GPA</div>
     </div>
   </div>
 
-  <!-- TASKS -->
-  <div class="panel" id="panel-tasks">
-    <div class="card">
-      <div class="card-title">📋 Add Assignment</div>
-      <div class="form-grid">
-        <div class="field"><label>📚 Subject</label><select id="asgSubject"><option value="">— choose —</option></select></div>
-        <div class="field"><label>📅 Due Date</label><input type="date" id="asgDue"></div>
-        <div class="field full"><label>📝 Assignment / Requirement</label><input type="text" id="asgTitle" placeholder="e.g. Chapter 4 summary, Vocab test…"></div>
-        <div class="field"><label>🌡️ Difficulty</label>
-          <select id="asgDiff"><option value="easy">🟢 Easy</option><option value="medium">🟡 Medium</option><option value="hard">🔴 Hard</option></select>
-        </div>
-        <div class="field"><label>💜 My Effort (Grit, 1–5)</label>
-          <select id="asgGrit">
-            <option value="1">1 — Just tried</option><option value="2">2 — Pushed myself</option>
-            <option value="3">3 — Really worked</option><option value="4">4 — Extra mile</option>
-            <option value="5">5 — Absolute max effort</option>
-          </select>
-        </div>
-      </div>
-      <br><button class="btn-primary" onclick="addAssignment()">➕ Add Task</button>
-      <div class="success-flash" id="asgSuccess">✅ Task added!</div>
-    </div>
-    <div class="card">
-      <div class="card-title">📋 Upcoming Tasks</div>
-      <div id="assignmentList"><div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No tasks yet!</div></div>
-    </div>
-  </div>
-
-  <!-- ADD GRADE -->
+  <!-- ════ ADD GRADE ════ -->
   <div class="panel" id="panel-add">
     <div class="card">
       <div class="card-title">➕ Log a New Grade</div>
       <div class="form-grid">
         <div class="field"><label>📅 Date</label><input type="date" id="gradeDate"></div>
-        <div class="field"><label>📚 Subject</label><select id="gradeSubject"><option value="">— choose —</option></select></div>
+        <div class="field"><label>📚 Subject</label>
+          <select id="gradeSubject" onchange="handleSubjectChange(this)">
+            <option value="">— choose —</option>
+          </select>
+        </div>
+        <div class="field full" id="customSubjectWrap" style="display:none;">
+          <label>📝 Custom Subject</label>
+          <input type="text" id="customSubjectInput" placeholder="Enter subject name…">
+        </div>
         <div class="field"><label>🖊️ Type</label>
-          <select id="gradeType"><option value="written">Written Exam</option><option value="oral">Oral Participation</option></select>
+          <select id="gradeType">
+            <option value="written">Written Exam</option>
+            <option value="oral">Oral Participation</option>
+          </select>
         </div>
         <div class="field"><label>🔢 Grade (1–6)</label>
           <select id="gradeValue">
@@ -402,7 +496,7 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
             <option value="5">5 — Mangelhaft</option><option value="6">6 — Ungenügend</option>
           </select>
         </div>
-        <div class="field full"><label>📝 Topic / Exam</label><input type="text" id="gradeTopic" placeholder="e.g. Photosynthesis, Chapter 3…"></div>
+        <div class="field full"><label>📝 Topic / Exam Name</label><input type="text" id="gradeTopic" placeholder="e.g. Photosynthesis, Chapter 3…"></div>
         <div class="field full"><label>💬 Note (optional)</label><textarea id="gradeNote" placeholder="How did it go?"></textarea></div>
       </div>
       <br><button class="btn-primary" onclick="addGrade()">💾 Save Grade</button>
@@ -410,45 +504,186 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
     </div>
   </div>
 
-  <!-- REWARDS -->
+  <!-- ════ TASKS ════ -->
+  <div class="panel" id="panel-tasks">
+    <div class="card">
+      <div class="card-title">📋 Assignments</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Add upcoming exams and tasks. Award yourself Grit Points for effort!</div>
+      <div class="form-grid">
+        <div class="field"><label>📚 Subject</label>
+          <select id="taskSubject"><option value="">— choose —</option></select>
+        </div>
+        <div class="field"><label>📅 Due Date</label><input type="date" id="taskDue"></div>
+        <div class="field full"><label>📝 Assignment / Requirement</label><input type="text" id="taskTitle" placeholder="e.g. Maths exam — Fractions & Geometry"></div>
+        <div class="field"><label>🔥 Difficulty</label>
+          <select id="taskDiff">
+            <option value="easy">🟢 Easy</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="hard">🔴 Hard</option>
+          </select>
+        </div>
+      </div>
+      <br><button class="btn-primary" onclick="addTask()">➕ Add Assignment</button>
+      <div class="success-flash" id="taskSuccess">✅ Assignment added!</div>
+    </div>
+    <div class="card">
+      <div class="card-title">📅 Upcoming</div>
+      <div id="taskListDisplay"><div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">No assignments yet. Add one above!</div></div>
+    </div>
+  </div>
+
+  <!-- ════ STRATEGY ════ -->
+  <div class="panel" id="panel-strategy">
+
+    <!-- PIT WALL: Today's Stints -->
+    <div class="card" id="pitWallCard">
+      <div class="card-title" id="pitWallTitle">🏎️ Pit Wall — Today's Stints</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;" id="pitWallSubtitle">Your tasks due today and this week, prioritised by difficulty.</div>
+      <div id="pitWallDisplay"><div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">No tasks yet — add assignments in 📋 Tasks first!</div></div>
+    </div>
+
+    <!-- OCR PASTE: Exam Requirements -->
+    <div class="card">
+      <div class="card-title" id="ocrTitle">📋 Paste Exam Requirements</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;" id="ocrSubtitle">Paste OCR text from your exam syllabus or requirements. Bibble will turn it into study topics!</div>
+      <div class="form-grid">
+        <div class="field"><label>📚 Subject</label>
+          <select id="stratSubject"><option value="">— choose —</option></select>
+        </div>
+        <div class="field"><label>📅 Exam Date</label>
+          <input type="date" id="stratExamDate">
+        </div>
+        <div class="field full"><label>📄 Paste Requirements / Syllabus Text</label>
+          <textarea id="stratOCRText" rows="6" placeholder="Paste your exam requirements, table of contents, or topic list here…&#10;&#10;e.g.&#10;Chapter 1: Cell Biology&#10;- Cell structure and function&#10;- Mitosis and meiosis&#10;Chapter 2: Genetics&#10;- DNA replication&#10;- Mendelian inheritance"></textarea>
+        </div>
+        <div class="field"><label>⏱️ Total study hours available</label>
+          <input type="number" id="stratHours" min="1" max="200" placeholder="e.g. 12" step="0.5">
+        </div>
+        <div class="field"><label>📅 Start study from</label>
+          <input type="date" id="stratStartDate">
+        </div>
+      </div>
+      <br>
+      <button class="btn-primary" onclick="parseStrategy()">🔍 Generate Study Plan</button>
+      <div class="success-flash" id="stratSuccess">✅ Study plan generated!</div>
+    </div>
+
+    <!-- GENERATED PLAN -->
+    <div class="card" id="stratPlanCard" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div class="card-title" style="margin-bottom:0;" id="stratPlanTitle">📅 Study Plan</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-primary btn-sm" onclick="recalculateStrategy()">🔄 Recalculate</button>
+          <button class="btn-primary btn-sm" style="background:linear-gradient(135deg,var(--leaf),#04a07a);" onclick="exportStratIcal()">📅 Export to iCal</button>
+        </div>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:10px;" id="stratPlanMeta"></div>
+      <div id="stratPlanDisplay"></div>
+    </div>
+
+    <!-- QUICK GRIT AWARD IN STRATEGY CONTEXT -->
+    <div class="card" style="padding:12px 16px;text-align:center;">
+      <div style="font-size:0.84rem;font-weight:700;color:var(--text-light);margin-bottom:8px;" id="stratGritLabel">Completed a study stint? Award yourself Grit Points!</div>
+      <button onclick="selfAwardGrit()" style="background:linear-gradient(135deg,#7b5ea7,#9b72d0);color:white;border:none;border-radius:50px;padding:9px 22px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.86rem;cursor:pointer;">✨ +5 Grit Points — I worked hard!</button>
+      <div style="font-size:0.74rem;color:var(--text-light);margin-top:6px;">Total Grit: <span id="stratGritTotal" style="font-weight:800;color:var(--purple);">0</span></div>
+    </div>
+  </div>
+
+  <!-- ════ WELLBEING ════ -->
+  <div class="panel" id="panel-wellbeing">
+    <div class="card">
+      <div class="card-title" id="mhTitle">🌤️ How are you feeling today?</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;" id="mhSubtitle">Tap the weather that matches your mood</div>
+
+      <div class="mh-weather-row" id="mhWeatherRow">
+        <div class="mh-icon" onclick="setMHScore(1,this)" title="Very low (1)">⛈️<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">1</div></div>
+        <div class="mh-icon" onclick="setMHScore(2,this)" title="Low (2)">🌧️<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">2</div></div>
+        <div class="mh-icon" onclick="setMHScore(3,this)" title="Below average (3)">🌦️<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">3</div></div>
+        <div class="mh-icon" onclick="setMHScore(4,this)" title="OK (4)">⛅<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">4</div></div>
+        <div class="mh-icon" onclick="setMHScore(5,this)" title="Neutral (5)">🌤️<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">5</div></div>
+        <div class="mh-icon" onclick="setMHScore(6,this)" title="Good (6)">☀️<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">6</div></div>
+        <div class="mh-icon" onclick="setMHScore(7,this)" title="Pretty good (7)">🌈<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">7</div></div>
+        <div class="mh-icon" onclick="setMHScore(8,this)" title="Great (8)">⭐<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">8</div></div>
+        <div class="mh-icon" onclick="setMHScore(9,this)" title="Amazing (9)">🌟<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">9</div></div>
+        <div class="mh-icon" onclick="setMHScore(10,this)" title="LEGENDARY (10)">🔆<div style="font-size:0.58rem;font-weight:700;margin-top:2px;">10</div></div>
+      </div>
+      <div class="mh-score-display" id="mhScoreDisplay">— tap above —</div>
+    </div>
+
+    <!-- Stress type (Lazarus hybrid coping) -->
+    <div class="card" id="stressTypeCard" style="display:none;">
+      <div class="card-title" id="stressTypeTitle">What kind of stress is this?</div>
+      <div class="stress-toggle">
+        <button class="stress-btn" id="stressDesk" onclick="setStressType('desk')">🖊️ Desk Stress<br><span style="font-size:0.72rem;font-weight:600;color:var(--text-light);">Task-focused<br>(I need a plan)</span></button>
+        <button class="stress-btn" id="stressHeart" onclick="setStressType('heart')">💗 Heart Stress<br><span style="font-size:0.72rem;font-weight:600;color:var(--text-light);">Emotion-focused<br>(I need to talk)</span></button>
+      </div>
+      <div id="stressCopingAdvice" style="background:#f0ebff;border-radius:11px;padding:10px 12px;font-size:0.84rem;font-weight:600;color:var(--purple);display:none;margin-top:8px;line-height:1.5;"></div>
+    </div>
+
+    <!-- Gratitude Journal -->
+    <div class="card">
+      <div class="card-title">🌱 Gratitude Journal</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:8px;">Name one thing you're grateful for today 🙏</div>
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <div style="flex:1;"><input type="text" id="gratitudeInput" placeholder="e.g. My friend helped me study Maths…" style="width:100%;"></div>
+        <button class="btn-primary btn-sm" onclick="addGratitude()">➕ Add</button>
+      </div>
+      <div id="gratitudeList" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- MH History -->
+    <div class="card">
+      <div class="card-title">📈 Mood History</div>
+      <div id="mhHistory"><div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">No entries yet. Check in daily! 🌤️</div></div>
+    </div>
+  </div>
+
+  <!-- ════ REWARDS ════ -->
   <div class="panel" id="panel-rewards">
-    <div class="dual-pts">
-      <div class="pts-box achievement"><div class="pts-box-val" id="shopPointsDisplay">⭐ 0</div><div class="pts-box-lbl">Achievement Points<br>(grade-based, spend in shop)</div></div>
-      <div class="pts-box grit"><div class="pts-box-val" id="gritPointsDisplay">💜 0</div><div class="pts-box-lbl">Grit Points<br>(self-awarded for effort)</div></div>
-    </div>
-    <div style="background:#f7f3ff;border-radius:12px;padding:9px 13px;font-size:0.74rem;font-weight:600;color:var(--text-light);margin-bottom:12px;">
-      ⭐ Achievement: Grade 1=+50, Grade 2=+30, Grade 3=+15, Improvement=+20<br>
-      💜 Grit: Awarded when you rate effort on tasks (max effort 5 = +25 pts)
-    </div>
     <div class="card">
       <div class="card-title">⭐ Points Shop</div>
-      <div class="section-label">🎩 Head</div><div class="accessory-grid" id="shopHead"></div>
-      <div class="section-label">👗 Clothes</div><div class="accessory-grid" id="shopCloth"></div>
-      <div class="section-label">🪴 Décor</div><div class="accessory-grid" id="shopDecor"></div>
+      <div class="points-box">
+        <div class="points-lbl">Shop balance</div>
+        <div class="points-total" id="shopPointsDisplay">⭐ 0</div>
+        <div class="points-how">Grade 1→+50⭐ · Grade 2→+30⭐ · Grade 3→+15⭐<br>Improvement→+20⭐ · Grit bonus→+5⭐ per grit pt</div>
+      </div>
+      <div class="section-label">🎩 Head</div>
+      <div class="accessory-grid" id="shopHead"></div>
+      <div class="section-label">👗 Clothes</div>
+      <div class="accessory-grid" id="shopCloth"></div>
+      <div class="section-label">🪴 Décor</div>
+      <div class="accessory-grid" id="shopDecor"></div>
     </div>
+
     <div class="card">
       <div class="card-title">💶 Real-World Euro Rewards</div>
-      <div style="font-size:0.78rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Parents set real euro amounts per grade — paid in cash, tracked separately from points.</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Separate from points — paid out in real cash.</div>
       <div class="payout-totals-grid">
-        <div class="payout-box earned"><div class="payout-val" id="euroEarned">€0</div><div class="payout-lbl">🏆 Earned</div></div>
-        <div class="payout-box paidout"><div class="payout-val" id="euroPaidOut">€0</div><div class="payout-lbl">✅ Paid</div></div>
-        <div class="payout-box owed"><div class="payout-val" id="euroOwed">€0</div><div class="payout-lbl">⏳ Owed</div></div>
+        <div class="payout-box earned"><div class="payout-val" id="euroEarned">€0.00</div><div class="payout-lbl">🏆 Earned</div></div>
+        <div class="payout-box paidout"><div class="payout-val" id="euroPaidOut">€0.00</div><div class="payout-lbl">✅ Paid Out</div></div>
+        <div class="payout-box owed"><div class="payout-val" id="euroOwed">€0.00</div><div class="payout-lbl">⏳ Owed</div></div>
       </div>
-      <div style="text-align:center;margin:10px 0;"><button class="btn-payout" onclick="showPayoutForm()">💶 Mark Money as Paid Out</button></div>
+      <div style="text-align:center;margin:10px 0;">
+        <button class="btn-payout" onclick="showPayoutForm()">💶 Mark Money as Paid Out</button>
+      </div>
       <div id="payoutForm" style="display:none;background:#f0fdf4;border-radius:12px;padding:12px;border:2px solid var(--leaf);margin-bottom:8px;">
+        <div style="font-weight:800;color:var(--leaf2);margin-bottom:8px;font-size:0.88rem;">💶 Record a payout</div>
         <div class="form-grid">
           <div class="field"><label>Amount (€)</label><input type="number" id="payoutAmount" min="0.01" step="0.01" placeholder="5.00"></div>
           <div class="field"><label>Date</label><input type="date" id="payoutDate"></div>
-          <div class="field full"><label>Note</label><input type="text" id="payoutNote" placeholder="e.g. For Grade 1 in Maths!"></div>
+          <div class="field full"><label>Note (optional)</label><input type="text" id="payoutNote" placeholder="e.g. Grade 1 in Maths!"></div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn-primary" style="padding:7px 14px;" onclick="recordPayout()">✅ Confirm</button>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <button class="btn-primary btn-sm" onclick="recordPayout()">✅ Confirm</button>
           <button onclick="hidePayoutForm()" style="background:none;border:none;font-weight:700;cursor:pointer;color:var(--text-light);">Cancel</button>
         </div>
         <div class="success-flash" id="payoutSuccess">🎉 Payout recorded!</div>
       </div>
       <div id="payoutHistory"></div>
+      <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
+      <div id="euroBreakdown"></div>
     </div>
+
     <div class="card">
       <div class="card-title">⚙️ Euro Reward Rules</div>
       <div class="form-grid">
@@ -460,56 +695,25 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
         <div class="field"><label>Grade 3 — Oral (€)</label><input type="number" id="ro3" min="0" step="0.5" placeholder="0.50"></div>
       </div>
       <br><button class="btn-primary" onclick="saveEuroRules()">💾 Save Rules</button>
-      <div class="success-flash" id="euroRulesSuccess">✅ Saved!</div>
+      <div class="success-flash" id="euroRulesSuccess">✅ Rules saved!</div>
     </div>
+
     <div class="card">
-      <div class="card-title">🌟 Wish List</div>
+      <div class="card-title">🌟 Real-World Wish List</div>
       <div class="form-grid">
         <div class="field"><label>🎁 Reward name</label><input type="text" id="wishName" placeholder="e.g. New sneakers"></div>
         <div class="field"><label>💶 Target (€)</label><input type="number" id="wishCost" min="1" step="0.5" placeholder="40.00"></div>
       </div>
-      <br><button class="btn-primary" onclick="addWish()">➕ Add</button>
+      <br><button class="btn-primary" onclick="addWish()">➕ Add to Wish List</button>
       <div id="wishListDisplay" style="margin-top:12px;"></div>
     </div>
   </div>
 
-  <!-- MINDSET -->
-  <div class="panel" id="panel-mindset">
-    <div class="card">
-      <div class="card-title" id="mhTitle">💙 Daily Check-in</div>
-      <div style="font-size:0.82rem;font-weight:600;color:var(--text-light);margin-bottom:10px;" id="mhSubtitle">How are you feeling today? Tap a weather icon.</div>
-      <div class="mh-scale" id="mhScale"></div>
-      <div class="mh-score-label" id="mhScoreLabel">—</div>
-      <div style="font-size:0.78rem;color:var(--text-light);font-weight:700;text-align:center;margin-bottom:8px;" id="mhMoodWord"></div>
-      <div style="font-size:0.78rem;font-weight:800;color:var(--text-light);text-align:center;margin-bottom:4px;" id="stressTypeLabel">What kind of stress?</div>
-      <div class="mh-type-row">
-        <button class="mh-type-btn active" id="btnDesk" onclick="setStressType('desk')">📚 Desk Stress<br><span style="font-size:0.64rem;font-weight:600;">(task / study)</span></button>
-        <button class="mh-type-btn" id="btnHeart" onclick="setStressType('heart')">❤️ Heart Stress<br><span style="font-size:0.64rem;font-weight:600;">(feelings / social)</span></button>
-      </div>
-      <div class="field" style="margin-top:8px;"><label>💬 What's on your mind? (optional)</label>
-        <textarea id="mhNote" rows="2" placeholder="Write as much or little as you like…"></textarea>
-      </div>
-      <br><button class="btn-primary" onclick="saveMoodEntry()">💾 Log my mood</button>
-      <div class="success-flash" id="mhSuccess">💙 Logged!</div>
-    </div>
-    <div class="card">
-      <div class="card-title" id="gratTitle">🌟 Gratitude Journal</div>
-      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:10px;" id="gratSubtitle">Name one thing you're grateful for today.</div>
-      <input type="text" id="gratEntry" placeholder="e.g. My best friend made me laugh…" maxlength="200" style="width:100%">
-      <br><br><button class="btn-primary" onclick="addGratitude()">🌟 Add</button>
-      <div style="margin-top:12px;" id="gratList"></div>
-    </div>
-    <div class="card">
-      <div class="card-title" id="mhHistTitle">📅 Mood History</div>
-      <div id="mhHistory"></div>
-    </div>
-  </div>
-
-  <!-- DESIGN -->
+  <!-- ════ DESIGN ════ -->
   <div class="panel" id="panel-design">
     <div class="card">
       <div class="card-title">🎨 Design Bibble</div>
-      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:12px;">Tap swatches or pick any colour — Bibble updates live! ✨</div>
+      <div style="font-size:0.84rem;color:var(--text-light);font-weight:600;margin-bottom:12px;">Tap swatches or pick any colour — Bibble updates live! ✨</div>
       <div style="text-align:center;margin-bottom:14px;">
         <canvas id="designCanvas" width="160" height="160" style="display:block;margin:0 auto;"></canvas>
       </div>
@@ -522,27 +726,23 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
       </div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
         <button class="btn-primary" onclick="saveBibbleColors()">💾 Save Bibble</button>
-        <button onclick="resetBibbleColors()" style="background:#f3f4f6;border:none;border-radius:50px;padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--text-light);">↩️ Reset</button>
+        <button onclick="resetBibbleColors()" style="background:#f3f4f6;border:none;border-radius:50px;padding:9px 18px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--text-light);">↩️ Reset</button>
       </div>
       <div class="success-flash" id="designSuccess">✨ Bibble looks amazing!</div>
     </div>
   </div>
 
-  <!-- GALLERY -->
+  <!-- ════ GALLERY ════ -->
   <div class="panel" id="panel-gallery">
     <div class="card">
       <div class="card-title">🖼️ Celebration Gallery</div>
-      <div class="privacy-row">
-        <label class="privacy-toggle"><input type="checkbox" id="privacyToggle" onchange="togglePrivacy()"><span class="privacy-slider"></span></label>
-        <span class="privacy-label" id="privacyLabel">Public (shareable)</span>
-      </div>
-      <div style="font-size:0.78rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">All your earned celebration cards.</div>
-      <div id="galleryEmpty" style="display:none;text-align:center;padding:30px;color:var(--text-light);font-weight:700;">No cards yet — log grades to earn your first! ✨</div>
+      <div style="font-size:0.84rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">All your earned celebration cards. Tap to download! ✨</div>
+      <div id="galleryEmpty" style="display:none;text-align:center;padding:28px;color:var(--text-light);font-weight:700;">No cards yet — log grades to earn your first! ✨</div>
       <div class="gallery-grid" id="galleryGrid"></div>
     </div>
   </div>
 
-  <!-- SETUP -->
+  <!-- ════ SETUP ════ -->
   <div class="panel" id="panel-setup">
     <div class="card">
       <div class="card-title">🗓️ Semester Info</div>
@@ -553,35 +753,33 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
         <div class="field"><label>🌟 Child's Name</label><input type="text" id="childName" placeholder="e.g. Mia"></div>
         <div class="field"><label>✨ Bibble's Name</label><input type="text" id="petName" placeholder="e.g. Bibble, Sparkle…"></div>
         <div class="field"><label>🏫 Class</label>
-          <select id="classLevel"><option value="">— choose —</option>
-            <option value="Klasse 1">Klasse 1</option><option value="Klasse 2">Klasse 2</option>
-            <option value="Klasse 3">Klasse 3</option><option value="Klasse 4">Klasse 4</option>
-            <option value="Klasse 5">Klasse 5</option><option value="Klasse 6">Klasse 6</option>
-            <option value="Klasse 7">Klasse 7</option><option value="Klasse 8">Klasse 8</option>
-            <option value="Klasse 9">Klasse 9</option><option value="Klasse 10">Klasse 10</option>
-            <option value="Oberstufe 1">Oberstufe 1</option><option value="Oberstufe 2">Oberstufe 2</option>
-            <option value="Abitur">Abitur year</option>
+          <select id="classLevel">
+            <option value="">— choose —</option>
+            <option>Klasse 1</option><option>Klasse 2</option><option>Klasse 3</option>
+            <option>Klasse 4</option><option>Klasse 5</option><option>Klasse 6</option>
+            <option>Klasse 7</option><option>Klasse 8</option><option>Klasse 9</option>
+            <option>Klasse 10</option><option>Oberstufe 1</option><option>Oberstufe 2</option>
+            <option>Abitur year</option>
           </select>
         </div>
       </div>
       <br><button class="btn-primary" onclick="saveSemester()">💾 Save</button>
       <div class="success-flash" id="semSuccess">✅ Saved!</div>
     </div>
+
     <div class="card">
-      <div class="card-title">⚖️ Weighted GPA Settings</div>
-      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Set how much written vs oral grades count toward the mean.</div>
-      <div class="ratio-row">
-        <span class="ratio-label">📝 Written weight:</span>
-        <input type="number" id="ratioWritten" min="0" max="10" step="0.5" value="2" style="width:68px;">
-        <span class="ratio-label">🎤 Oral weight:</span>
-        <input type="number" id="ratioOral" min="0" max="10" step="0.5" value="1" style="width:68px;">
+      <div class="card-title">⚖️ GPA Weighting</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Set how much written vs oral grades count in the overall GPA (must add to 100).</div>
+      <div class="form-grid">
+        <div class="field"><label>📝 Written weight (%)</label><input type="number" id="ratioWritten" min="0" max="100" placeholder="60" value="60"></div>
+        <div class="field"><label>🗣️ Oral weight (%)</label><input type="number" id="ratioOral" min="0" max="100" placeholder="40" value="40"></div>
       </div>
-      <div style="font-size:0.73rem;color:var(--text-light);font-weight:600;">e.g. Written=2, Oral=1 means written exams count twice as much.</div>
-      <br><button class="btn-primary" onclick="saveRatios()">💾 Save Weights</button>
+      <br><button class="btn-primary" onclick="saveGPARatio()">💾 Save Weights</button>
       <div class="success-flash" id="ratioSuccess">✅ Weights saved!</div>
     </div>
+
     <div class="card">
-      <div class="card-title">📚 Subjects</div>
+      <div class="card-title">📚 Subjects &amp; Topics</div>
       <div class="form-grid">
         <div class="field"><label>Subject</label><input type="text" id="newSubject" placeholder="e.g. Maths, Biology…"></div>
         <div class="field"><label>Topics (comma-separated)</label><input type="text" id="newTopics" placeholder="e.g. Fractions, Geometry"></div>
@@ -589,8 +787,1789 @@ body.f1-mode .journey-stage-icon.current{background:linear-gradient(135deg,#e106
       <br><button class="btn-primary" onclick="addSubject()">➕ Add Subject</button>
       <div style="margin-top:12px;" id="subjectList"></div>
     </div>
+
     <div class="card">
       <div class="card-title">🗺️ Journey Controls</div>
-      <div style="font-size:0.8rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Click at the end of each semester to advance Bibble on the map.</div>
+      <div style="font-size:0.82rem;color:var(--text-light);font-weight:600;margin-bottom:10px;">Click at the end of a semester to advance Bibble on the adventure map.</div>
       <button class="btn-primary" onclick="advanceJourney()">🗺️ Complete Semester &amp; Advance</button>
-      <div style="font-size:0.73rem;color:var(--text-light);margin-top:8px;font-weight:600;">Current stage: <span id="currentStageLabel" style="color:var(--purple);font-weight:800;"></span></div
+      <div style="font-size:0.76rem;color:var(--text-light);margin-top:8px;font-weight:600;">Stage: <span id="currentStageLabel" style="color:var(--purple);font-weight:800;"></span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗑️ Danger Zone</div>
+      <button class="btn-danger" onclick="clearAllData()" style="padding:9px 18px;font-size:0.88rem;">⚠️ Reset ALL data</button>
+    </div>
+  </div>
+
+  <div class="version-tag">v2.0 · Bibble's Study Tracker</div>
+</div>
+
+<!-- CELEBRATION MODAL -->
+<div class="modal-backdrop" id="celebModal">
+  <div class="modal-card">
+    <div style="width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#fce4ec,#ede9fe,#e8f4fd);position:relative;overflow:hidden;">
+      <div id="celebLoader" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;">
+        <div style="font-size:2.5rem;animation:spin 1.2s linear infinite;">✨</div>
+        <div style="font-family:'Fredoka One',cursive;color:var(--purple);">Painting your moment…</div>
+      </div>
+      <canvas id="celebCanvas" style="display:none;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="modal-body">
+      <div id="celebEmoji" style="font-size:2rem;text-align:center;margin-bottom:5px;">🎉</div>
+      <div id="celebTitle" style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--purple);text-align:center;margin-bottom:6px;"></div>
+      <div id="celebPoints" style="background:linear-gradient(135deg,#fef9c3,#fde68a);border-radius:10px;padding:7px 12px;text-align:center;font-weight:800;font-size:0.88rem;color:var(--bark);margin-bottom:8px;"></div>
+      <div id="celebSkill" style="display:none;background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:8px;font-weight:800;font-size:0.88rem;color:var(--purple);"></div>
+      <div id="celebMsg" style="font-size:0.86rem;font-weight:600;color:var(--text);text-align:center;line-height:1.5;margin-bottom:10px;"></div>
+      <div id="celebImprove" style="display:none;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:0.82rem;font-weight:700;color:#065f46;text-align:center;"></div>
+      <div class="modal-btns">
+        <button class="btn-modal-save" onclick="downloadCelebration()">💾 Save image</button>
+        <button class="btn-modal-close" onclick="closeCelebModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECAP MODAL -->
+<div class="modal-backdrop" id="recapModal">
+  <div class="modal-card" style="max-width:420px;">
+    <canvas id="recapCanvas" width="400" height="620" style="display:block;width:100%;"></canvas>
+    <div class="modal-btns" style="padding:14px 16px 18px;">
+      <button class="btn-modal-save" onclick="downloadRecap()">💾 Save recap</button>
+      <button class="btn-modal-close" onclick="closeRecapModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNEY ADVANCE MODAL -->
+<div class="modal-backdrop" id="journeyModal">
+  <div class="modal-card">
+    <div class="modal-body" style="text-align:center;padding:28px 24px;">
+      <div style="font-size:3.5rem;" id="journeyModalIcon">🌲</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--purple);margin:10px 0 6px;" id="journeyModalTitle"></div>
+      <div style="font-size:0.88rem;font-weight:600;color:var(--text);line-height:1.5;" id="journeyModalMsg"></div>
+      <div class="modal-btns">
+        <button class="btn-modal-save" onclick="closeJourneyModal()">✨ Continue Adventure!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════
+//  DATA STORE  (localStorage, prefix stt2_)
+// ══════════════════════════════════════════════════
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem('stt2_'+k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem('stt2_'+k, JSON.stringify(v)),
+  del: k => localStorage.removeItem('stt2_'+k),
+};
+
+function getData() {
+  return {
+    semester:       S.get('semester')       || { start:'', end:'', year:'', child:'Star Learner', petName:'Bibble', classLevel:'' },
+    subjects:       S.get('subjects')       || [],
+    grades:         S.get('grades')         || [],
+    euroRules:      S.get('euroRules')      || { w1:5, w2:3, w3:1, o1:2, o2:1, o3:0.5 },
+    accessories:    S.get('accessories')    || { owned:[], equipped:[], pointsSpent:0 },
+    achievePts:     S.get('achievePts')     || 0,
+    gritPts:        S.get('gritPts')        || 0,
+    payouts:        S.get('payouts')        || [],
+    bibbleColors:   S.get('bibbleColors')   || { body:'#c9b8ff', belly:'#f3f0ff', wing:'#a78bfa', eye:'#1a237e', beak:'#ff8f00' },
+    wishList:       S.get('wishList')       || [],
+    journeyStage:   S.get('journeyStage')   || 0,
+    unlockedSkills: S.get('unlockedSkills') || [],
+    gallery:        S.get('gallery')        || [],
+    tasks:          S.get('tasks')          || [],
+    mhLog:          S.get('mhLog')          || [],
+    gratitude:      S.get('gratitude')      || [],
+    persona:        S.get('persona')        || 'fairy',
+    gpaRatio:       S.get('gpaRatio')       || { written:60, oral:40 },
+  };
+}
+function save(k,v){ S.set(k,v); }
+
+// ══════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════
+const SHOP = [
+  {id:'crown',  cat:'head', name:'Crown',       emoji:'👑', pts:200},
+  {id:'hat',    cat:'head', name:'Party Hat',   emoji:'🎩', pts:80},
+  {id:'bow',    cat:'head', name:'Cute Bow',    emoji:'🎀', pts:50},
+  {id:'glasses',cat:'head', name:'Sunglasses',  emoji:'🕶️',pts:100},
+  {id:'flower', cat:'head', name:'Flowers',     emoji:'🌸', pts:70},
+  {id:'star_h', cat:'head', name:'Star Clip',   emoji:'⭐', pts:40},
+  {id:'scarf',  cat:'cloth',name:'Cosy Scarf',  emoji:'🧣', pts:90},
+  {id:'bowtie', cat:'cloth',name:'Bow Tie',     emoji:'🪢', pts:60},
+  {id:'jacket', cat:'cloth',name:'Jacket',      emoji:'🧥', pts:150},
+  {id:'tutu',   cat:'cloth',name:'Tutu',        emoji:'🩰', pts:130},
+  {id:'cape',   cat:'cloth',name:'Hero Cape',   emoji:'🦸', pts:180},
+  {id:'sweater',cat:'cloth',name:'Sweater',     emoji:'🧶', pts:110},
+  {id:'plant',  cat:'decor',name:'Tiny Plant',  emoji:'🪴', pts:70},
+  {id:'lamp',   cat:'decor',name:'Cosy Lamp',   emoji:'🪔', pts:80},
+  {id:'book',   cat:'decor',name:'Books',       emoji:'📚', pts:50},
+  {id:'pillow', cat:'decor',name:'Pillow',      emoji:'🛋️',pts:90},
+  {id:'fairy',  cat:'decor',name:'Fairy Lights',emoji:'✨', pts:120},
+  {id:'frame',  cat:'decor',name:'Photo Frame', emoji:'🖼️',pts:85},
+];
+
+const JOURNEY_FAIRY = [
+  {name:'Enchanted Forest', icon:'🌲', msg:'The ancient trees whisper secrets of wisdom. Your hard work opened the gate!'},
+  {name:'Crystal Cave',     icon:'💎', msg:'Sparkling crystals light the way! Every gem represents a lesson learned.'},
+  {name:'Cloud Kingdom',    icon:'☁️', msg:'Bibble floats up to the Cloud Kingdom! Your grades carried you to the sky!'},
+  {name:'Dragon Peak',      icon:'🐉', msg:'The mighty Dragon Peak! The wise dragon bows — a true scholar stands before him!'},
+  {name:'Rainbow Summit',   icon:'🌈', msg:'THE RAINBOW SUMMIT! All magical creatures celebrate your incredible journey!'},
+];
+
+const JOURNEY_F1 = [
+  {name:'Formation Lap',  icon:'🏁', msg:'Engines warm, tyres primed. You\'ve qualified — the race begins!'},
+  {name:'Pit Strategy',   icon:'🔧', msg:'Brilliant pit stop! You gained three places. The data shows improvement!'},
+  {name:'Fastest Lap',    icon:'⚡', msg:'FASTEST LAP! Purple sector times across the board. Exceptional performance!'},
+  {name:'Podium Finish',  icon:'🏆', msg:'P1! The champagne is flying! You\'ve delivered under pressure. Outstanding!'},
+  {name:'World Champion', icon:'🌍', msg:'WORLD CHAMPION! The team is celebrating. You brought it home. Legendary!'},
+];
+
+const BIBBLE_SKILLS = [
+  {id:'sparkle', name:'Magic Sparkle', emoji:'✨', desc:'Your first Sehr gut! Pure magic.'},
+  {id:'fairy',   name:'Fairy Dust',    emoji:'🧚', desc:'Sprinkle learning magic everywhere!'},
+  {id:'star',    name:'Star Beam',     emoji:'⭐', desc:'You shine so bright!'},
+  {id:'rainbow', name:'Rainbow Breath',emoji:'🌈', desc:'Colour the world with knowledge!'},
+  {id:'crystal', name:'Crystal Voice', emoji:'💎', desc:'Your answers ring crystal clear!'},
+  {id:'dream',   name:'Dream Wings',   emoji:'🦋', desc:'Soar to new academic heights!'},
+  {id:'moon',    name:'Moon Glow',     emoji:'🌙', desc:'Even night-time studying is magical!'},
+  {id:'heart',   name:'Heart Magic',   emoji:'💖', desc:'Learning with love is the most powerful spell!'},
+];
+
+const GRADE_INFO = {
+  1:{emoji:'🏆',prefix:'INCREDIBLE!'}, 2:{emoji:'🌟',prefix:'Amazing work!'},
+  3:{emoji:'😊',prefix:'Well done!'},  4:{emoji:'💪',prefix:'You showed up!'},
+  5:{emoji:'🤗',prefix:'Keep going!'}, 6:{emoji:'🫂',prefix:'Tomorrow is a new chance!'},
+};
+
+const FALLBACK_FAIRY = [
+  'Every great wizard started with their first spell. One step at a time! 🌱',
+  'A tiny mistake is just a star that hasn\'t found its place yet. Keep going! ✨',
+  'You arrived today — that makes you already a hero of this story! 💫',
+  'Even the mightiest dragon once hatched from a tiny egg. 🐉',
+  'What one magical thing could you study for just 10 minutes today? ⏱️',
+];
+
+const FALLBACK_F1 = [
+  'Sector 1 looks clean. Build your rhythm and we\'ll push in Sector 3. Let\'s go! 🏎️',
+  'Box, box — we\'re switching to a new strategy. You\'ve got this! 🔧',
+  'The data shows you\'re improving lap on lap. Trust the process! 📊',
+  'Every champion has a bad qualifying session sometimes. Tomorrow we come back. 🏁',
+  'Margin of improvement: +0.3 per session. That\'s championship-level consistency! ⚡',
+];
+
+const STRESS_DESK = [
+  'Let\'s break that task into three small pit stops. Which one feels most achievable right now?',
+  'List the top two things blocking you. We solve those first — then we\'re back on pace.',
+  'Every assignment has a fastest lap hidden inside. Find the first 5 minutes and start there.',
+];
+const STRESS_HEART = [
+  'It\'s okay to feel overwhelmed. That feeling means you care deeply — and that\'s your superpower.',
+  'Take three slow breaths. You\'re not behind; you\'re exactly where you need to be right now.',
+  'Feeling heavy today is valid. Rest isn\'t giving up — it\'s fuelling up for tomorrow.',
+];
+
+let bibbleFrame=0, bibbleMood='happy', msgIdx=0, loadingMsg=false;
+let currentPersona='fairy';
+
+// ══════════════════════════════════════════════════
+//  PERSONA
+// ══════════════════════════════════════════════════
+function setPersona(p) {
+  currentPersona=p;
+  save('persona',p);
+  document.getElementById('personaFairy').classList.toggle('active',p==='fairy');
+  document.getElementById('personaF1').classList.toggle('active',p==='f1');
+  document.body.classList.toggle('f1',p==='f1');
+  const d=getData();
+  // Update UI labels
+  document.getElementById('journeyTitle').textContent = p==='fairy' ? '🗺️ Bibble\'s Fairytale Adventure' : '🏎️ Bibble\'s F1 Race Season';
+  document.getElementById('mhTitle').textContent = p==='fairy' ? '🌤️ How are you feeling today?' : '📡 Driver Status Check';
+  document.getElementById('mhSubtitle').textContent = p==='fairy' ? 'Tap the weather that matches your mood' : 'What\'s the car condition right now?';
+  renderJourneyMap(d.journeyStage);
+  renderAll();
+}
+
+// ══════════════════════════════════════════════════
+//  ENGINES
+// ══════════════════════════════════════════════════
+function pointsForGrade(grade, prevMean) {
+  const g=Number(grade);
+  let pts=g===1?50:g===2?30:g===3?15:g===4?5:2;
+  if (prevMean!==null && g<prevMean-0.3) pts+=20;
+  return pts;
+}
+function pointsForLevel(totalPts) {
+  const level=Math.floor(totalPts/100)+1, inLevel=totalPts%100;
+  return {level,inLevel,toNext:100-inLevel};
+}
+function eurosForGrade(grade,type,rules) {
+  const g=Number(grade);
+  return type==='written'?(g===1?rules.w1||0:g===2?rules.w2||0:g===3?rules.w3||0:0)
+                         :(g===1?rules.o1||0:g===2?rules.o2||0:g===3?rules.o3||0:0);
+}
+function calcMean(arr) {
+  if(!arr.length) return null;
+  return arr.reduce((a,b)=>a+Number(b.grade),0)/arr.length;
+}
+function calcWeightedMean(written, oral, ratio) {
+  const wm=calcMean(written), om=calcMean(oral);
+  if (wm===null && om===null) return null;
+  const rw=ratio.written/100, ro=ratio.oral/100;
+  if (wm===null) return om;
+  if (om===null) return wm;
+  return wm*rw + om*ro;
+}
+function fmtMean(m){ return m===null?'—':m.toFixed(2); }
+function gradePillClass(g){ return 'grade-pill g'+Math.min(6,Math.max(1,Math.round(g))); }
+function calcImprovement(grades) {
+  const bySubj={};
+  grades.forEach(g=>{if(!bySubj[g.subject])bySubj[g.subject]=[];bySubj[g.subject].push(g);});
+  let best=null;
+  Object.entries(bySubj).forEach(([subj,gs])=>{
+    if(gs.length<2)return;
+    const sorted=[...gs].sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const first=sorted[0].grade,last=sorted[sorted.length-1].grade,delta=first-last;
+    if(delta>0&&(!best||delta>best.delta))best={subject:subj,from:first,to:last,delta};
+  });
+  return best;
+}
+function totalPoints(d) {
+  // Achievement + Grit (grit contributes at 1:5 ratio to shop balance)
+  return (d.achievePts||0) + Math.floor((d.gritPts||0)/5);
+}
+
+// ══════════════════════════════════════════════════
+//  BIBBLE DRAWING
+// ══════════════════════════════════════════════════
+function getBibbleMood(mean){
+  if(!mean)return'study';
+  return mean<=1.5?'great':mean<=2.5?'happy':'study';
+}
+
+function drawBibble(canvasId, frame, colors, equippedIds) {
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.imageSmoothingEnabled=true;
+  const sc=W/120;
+  ctx.save();ctx.scale(sc,sc);
+
+  const f=frame||0;
+  const bounce=Math.sin(f*0.13)*2.2;
+  const blink=(f%75<4);
+  const wingFlap=Math.sin(f*0.18)*0.22;
+
+  const cx=60,cy=60+bounce,R=28;
+  const {body:B,belly:V,wing:WC,eye:E,beak:BK}=colors;
+  const eq=equippedIds||[];
+
+  // shadow
+  ctx.beginPath();ctx.ellipse(cx,cy+R+8,18,5,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fill();
+
+  // wings
+  [[cx-R+4,cy+4,-1],[cx+R-4,cy+4,1]].forEach(([wx,wy,dir])=>{
+    ctx.save();ctx.translate(wx,wy);ctx.rotate(dir*(0.6-wingFlap*dir));
+    const wg=ctx.createLinearGradient(dir*-18,0,0,0);
+    wg.addColorStop(0,WC+'88');wg.addColorStop(1,WC);
+    ctx.beginPath();ctx.moveTo(0,0);
+    ctx.bezierCurveTo(dir*8,-14,dir*22,-16,dir*20,-2);
+    ctx.bezierCurveTo(dir*18,10,dir*6,12,0,0);
+    ctx.fillStyle=wg;ctx.fill();
+    ctx.beginPath();ctx.moveTo(dir*2,-1);
+    ctx.bezierCurveTo(dir*5,-8,dir*14,-10,dir*12,-2);
+    ctx.bezierCurveTo(dir*10,4,dir*4,5,dir*2,-1);
+    ctx.fillStyle='rgba(255,255,255,0.28)';ctx.fill();
+    ctx.restore();
+  });
+
+  // cape (behind body)
+  if(eq.includes('cape')){
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx-20,cy-8);
+    ctx.quadraticCurveTo(cx-36,cy+28,cx-16,cy+R+6);
+    ctx.lineTo(cx+16,cy+R+6);
+    ctx.quadraticCurveTo(cx+36,cy+28,cx+20,cy-8);
+    ctx.fillStyle='#ef476f';ctx.fill();
+    ctx.restore();
+  }
+
+  // tutu poof around base
+  if(eq.includes('tutu')){
+    const tc=['#ffd6e7','#c9b8ff','#b8f0e8','#ffe8b0','#ffd6e7','#c9b8ff','#b8f0e8','#ffe8b0'];
+    for(let i=0;i<8;i++){
+      const a=(i/8)*Math.PI*2;
+      ctx.beginPath();
+      ctx.ellipse(cx+Math.cos(a)*(R-2),cy+10+Math.sin(a)*(R-10)*0.4+8,7,10,a+Math.PI/2,0,Math.PI*2);
+      ctx.fillStyle=tc[i];ctx.fill();
+    }
+  }
+
+  // body
+  const bg=ctx.createRadialGradient(cx-8,cy-8,2,cx,cy,R+4);
+  bg.addColorStop(0,'#ffffff55');bg.addColorStop(0.4,B);bg.addColorStop(1,B+'cc');
+  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
+
+  // jacket/sweater overlay
+  if(eq.includes('jacket')||eq.includes('sweater')){
+    ctx.beginPath();ctx.arc(cx,cy,R,0.3,Math.PI-0.3);ctx.lineTo(cx-R+5,cy);
+    ctx.arc(cx,cy,R,Math.PI,Math.PI*2);
+    ctx.fillStyle=eq.includes('jacket')?'#7b5ea788':'#f4a7b988';ctx.fill();
+  }
+
+  // belly
+  const bg2=ctx.createRadialGradient(cx,cy+4,0,cx,cy+4,14);
+  bg2.addColorStop(0,V);bg2.addColorStop(1,V+'00');
+  ctx.beginPath();ctx.ellipse(cx,cy+6,13,15,0,0,Math.PI*2);ctx.fillStyle=bg2;ctx.fill();
+
+  // fur tufts
+  for(let i=0;i<10;i++){
+    const a=(i/10)*Math.PI*2+Math.sin(f*0.09)*0.05*i;
+    ctx.beginPath();
+    const pa=a-0.25,pb=a+0.25;
+    ctx.moveTo(cx+Math.cos(a)*(R-2),cy+Math.sin(a)*(R-2));
+    ctx.lineTo(cx+Math.cos(pa)*(R-6),cy+Math.sin(pa)*(R-6));
+    ctx.lineTo(cx+Math.cos(a)*(R+7),cy+Math.sin(a)*(R+7));
+    ctx.lineTo(cx+Math.cos(pb)*(R-6),cy+Math.sin(pb)*(R-6));
+    ctx.closePath();ctx.fillStyle=B;ctx.fill();
+  }
+
+  // feet stubs
+  ctx.beginPath();ctx.ellipse(cx-10,cy+R+2,6,5,0.2,0,Math.PI*2);ctx.fillStyle=B;ctx.fill();
+  ctx.beginPath();ctx.ellipse(cx+10,cy+R+2,6,5,-0.2,0,Math.PI*2);ctx.fillStyle=B;ctx.fill();
+
+  // EYES — large, centred on face upper half
+  const eyeR=10,eyeY=cy-6,bH=blink?1.5:eyeR;
+  [-12,12].forEach(ex=>{
+    ctx.beginPath();ctx.ellipse(cx+ex,eyeY,eyeR,bH,0,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();
+    if(!blink){
+      ctx.beginPath();ctx.arc(cx+ex,eyeY,6.5,0,Math.PI*2);ctx.fillStyle=E;ctx.fill();
+      ctx.beginPath();ctx.arc(cx+ex,eyeY,3.8,0,Math.PI*2);ctx.fillStyle='#0a0618';ctx.fill();
+      ctx.beginPath();ctx.arc(cx+ex+(ex>0?3:-3),eyeY-3.5,2.8,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.95)';ctx.fill();
+      ctx.beginPath();ctx.arc(cx+ex-(ex>0?2:-2),eyeY+2,1.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.55)';ctx.fill();
+    }
+    ctx.beginPath();ctx.ellipse(cx+ex,eyeY,eyeR,bH,0,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;ctx.stroke();
+  });
+
+  // BEAK — open, centred below eyes
+  const beakY=cy+6;
+  ctx.beginPath();ctx.moveTo(cx-5,beakY);ctx.quadraticCurveTo(cx,beakY-3,cx+5,beakY);ctx.quadraticCurveTo(cx,beakY+2,cx-5,beakY);
+  ctx.fillStyle=BK;ctx.fill();
+  ctx.beginPath();ctx.moveTo(cx-4,beakY+1);ctx.quadraticCurveTo(cx,beakY+6,cx+4,beakY+1);ctx.fillStyle=BK+'bb';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,beakY+4,1.5,0,Math.PI*2);ctx.fillStyle='#ef476f';ctx.fill();
+
+  // ── ACCESSORIES — anatomy-correct positions ──
+  const topY=cy-R-2; // very top of sphere
+  ctx.textAlign='center';
+
+  // HEAD accessories sit on top of sphere
+  if(eq.includes('crown'))       {ctx.font='22px serif';ctx.fillText('👑',cx,topY);}
+  else if(eq.includes('hat'))    {ctx.font='20px serif';ctx.fillText('🎩',cx,topY+2);}
+  else if(eq.includes('flower')) {ctx.font='18px serif';ctx.fillText('🌸',cx,topY+4);}
+  else if(eq.includes('star_h')) {ctx.font='16px serif';ctx.fillText('⭐',cx,topY+5);}
+
+  // GLASSES across eyes (correct y: eyeY+5)
+  if(eq.includes('glasses')){ctx.font='17px serif';ctx.fillText('🕶️',cx,eyeY+5);}
+
+  // BOW on top-right of body sphere (not on non-existent ears)
+  if(eq.includes('bow')){ctx.font='14px serif';ctx.fillText('🎀',cx+R-4,cy-R+4);}
+
+  // SCARF / BOWTIE at the equator (belly/chin area = cy + R/2)
+  if(eq.includes('scarf'))      {ctx.font='16px serif';ctx.fillText('🧣',cx,cy+R-2);}
+  else if(eq.includes('bowtie')){ctx.font='13px serif';ctx.fillText('🪢',cx,cy+R-4);}
+
+  // DÉCOR floating beside Bibble
+  ctx.textAlign='left';
+  [['plant','🪴',cx+R+14,cy+8,18],['lamp','🪔',cx-R-22,cy+4,16],
+   ['book','📚',cx+R+12,cy+22,16],['pillow','🛋️',cx-R-24,cy+22,18],
+   ['fairy','✨',cx+R+8,cy-R-8,14],['frame','🖼️',cx-R-24,cy-R-2,18]]
+  .forEach(([id,em,x,y,sz])=>{if(eq.includes(id)){ctx.font=`${sz}px serif`;ctx.fillText(em,x,y);}});
+
+  // sparkles for great mood
+  if(bibbleMood==='great'&&!blink){
+    [[cx-R-4,cy-R+2],[cx+R+4,cy-R],[cx,cy-R-8]].forEach(([sx,sy],i)=>{
+      ctx.save();ctx.globalAlpha=Math.sin((f*0.08+i*1.2)%(Math.PI*2))*0.5+0.5;
+      ctx.font='10px serif';ctx.fillText('✨',sx-5,sy);ctx.restore();
+    });
+  }
+
+  ctx.textAlign='start';
+  ctx.restore();
+}
+
+function animateBibble() {
+  const d=getData();
+  const mean=d.grades.length?d.grades.reduce((a,b)=>a+Number(b.grade),0)/d.grades.length:null;
+  bibbleMood=getBibbleMood(mean);
+  drawBibble('mainCanvas',bibbleFrame,d.bibbleColors,d.accessories.equipped||[]);
+  bibbleFrame++;
+  requestAnimationFrame(animateBibble);
+}
+
+// ══════════════════════════════════════════════════
+//  AI MESSAGE
+// ══════════════════════════════════════════════════
+async function fetchAIMessage() {
+  const d=getData();
+  const petName=d.semester.petName||'Bibble';
+  const child=d.semester.child||'you';
+  const subjs=d.subjects.map(s=>s.name).join(', ')||'various subjects';
+  const recent=d.grades.slice(-5).map(g=>`${g.subject}: ${g.grade}`).join(', ')||'no grades yet';
+  const stages=currentPersona==='f1'?JOURNEY_F1:JOURNEY_FAIRY;
+  const stage=stages[d.journeyStage]||stages[0];
+  const isF1=currentPersona==='f1';
+
+  const prompt=isF1
+    ?`You are ${petName}, an F1 Race Engineer speaking to a young student-driver named ${child}. Subjects: ${subjs}. Recent grades: ${recent}. Race stage: "${stage.name}". Write ONE short, punchy, technical-but-warm radio message (2 sentences). Use F1 terminology. End with a tip. Max 1 emoji. Sign off as ${petName}. ONLY the message.`
+    :`You are ${petName}, a magical Bibble fairy creature. You are the study companion of ${child}. Subjects: ${subjs}. Recent grades: ${recent}. Adventure stage: "${stage.name}". Write ONE warm, magical, age-appropriate motivational message (2-3 sentences). Use gentle fairy adventure language. End with a question or tip. 1-2 emojis. Sign off as ${petName}. ONLY the message.`;
+
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:180,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await r.json();
+    const txt=data?.content?.[0]?.text?.trim();
+    if(txt&&txt.length>10)return txt;
+  }catch{}
+  return null;
+}
+
+async function newMessage() {
+  if(loadingMsg)return;
+  loadingMsg=true;
+  const el=document.getElementById('petMessage');
+  el.textContent=currentPersona==='f1'?'📡 Connecting to pit wall…':'✨ Bibble is thinking…';
+  const ai=await fetchAIMessage();
+  const fallbacks=currentPersona==='f1'?FALLBACK_F1:FALLBACK_FAIRY;
+  if(ai){el.textContent=ai;}
+  else{msgIdx=(msgIdx+1)%fallbacks.length;el.textContent=fallbacks[msgIdx];}
+  loadingMsg=false;
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════
+function renderAll(){renderHome();renderGrades();renderRewards();renderSetup();renderGallery();renderTasks();renderWellbeing();renderStrategy();}
+
+function renderHome() {
+  const d=getData();
+  const petName=d.semester.petName||'Bibble';
+  const child=d.semester.child||'';
+
+  document.getElementById('appTitle').textContent=`✨ ${petName}'s Study Tracker`;
+  document.getElementById('appSubtitle').textContent=`${child?child+"'s ":''}magical study companion ✨${d.semester.classLevel?' · '+d.semester.classLevel:''}`;
+  document.title=`${petName}'s Study Tracker`;
+
+  const moods={great:`🌟 ${petName} is GLOWING with pride!`,happy:`😊 ${petName} is cheering for you!`,study:`📚 ${petName} is ready to study!`};
+  document.getElementById('petMoodLabel').textContent=moods[bibbleMood]||moods.happy;
+
+  const ratio=d.gpaRatio||{written:60,oral:40};
+  const allSubjects=d.subjects.length?d.subjects.map(s=>s.name):[...new Set(d.grades.map(g=>g.subject))];
+  const subjectMeans=allSubjects.map(sn=>{
+    const sg=d.grades.filter(g=>g.subject===sn);
+    return calcWeightedMean(sg.filter(g=>g.type==='written'),sg.filter(g=>g.type==='oral'),ratio);
+  }).filter(m=>m!==null);
+  const overallGPA=subjectMeans.length?subjectMeans.reduce((a,b)=>a+b,0)/subjectMeans.length:null;
+
+  document.getElementById('statGPA').textContent=overallGPA?overallGPA.toFixed(2):'—';
+
+  const aPts=d.achievePts||0,gPts=d.gritPts||0;
+  const shopPts=Math.max(0,aPts+Math.floor(gPts/5)-(d.accessories.pointsSpent||0));
+  document.getElementById('statPoints').textContent=`⭐ ${shopPts}`;
+  document.getElementById('achievePtsDisplay').textContent=`⭐ ${aPts}`;
+  document.getElementById('gritPtsDisplay').textContent=`💪 ${gPts}`;
+
+  const {level,inLevel,toNext}=pointsForLevel(aPts+Math.floor(gPts/5));
+  document.getElementById('petLevel').textContent=level;
+  document.getElementById('nextLevel').textContent=level+1;
+  document.getElementById('pointsToNext').textContent=toNext;
+  document.getElementById('pointsBar').style.width=inLevel+'%';
+  document.getElementById('pointsLabel').textContent=`${inLevel} / 100 pts`;
+
+  const totalEarned=d.grades.reduce((s,g)=>s+eurosForGrade(g.grade,g.type,d.euroRules),0);
+  const totalPaidOut=(d.payouts||[]).reduce((s,p)=>s+Number(p.amount),0);
+  document.getElementById('statEuros').textContent='€'+Math.max(0,totalEarned-totalPaidOut).toFixed(2);
+
+  // Safety car check
+  const latestMH=d.mhLog&&d.mhLog.length?d.mhLog[d.mhLog.length-1]:null;
+  const sc=document.getElementById('safetyCar');
+  if(latestMH&&latestMH.score<4){
+    sc.style.display='block';
+    const isF1=currentPersona==='f1';
+    document.getElementById('safetyCarMsg').textContent=isF1
+      ?`⚠️ Safety Car deployed. ${d.semester.petName||'Bibble'} says: take it easy this lap, ${child||'champion'}. We box, we rest, we come back stronger.`
+      :`🌙 Resting Cave Protocol: ${d.semester.petName||'Bibble'} gently wraps you in a warm blanket. You don't need to be brave today, ${child||'little one'}. Rest is magic too.`;
+  }else{sc.style.display='none';}
+
+  renderJourneyMap(d.journeyStage);
+  renderSkillsGrid(d.unlockedSkills||[]);
+  syncHomeMhWidget();
+
+  // Subject bars
+  const overviewEl=document.getElementById('subjectOverview');
+  if(!d.subjects.length){overviewEl.innerHTML='<div style="color:var(--text-light);font-size:0.88rem;font-weight:600;">Set up subjects in ⚙️ Setup first!</div>';}
+  else{
+    overviewEl.innerHTML='<div style="display:flex;flex-direction:column;gap:9px;">'+
+      d.subjects.map(s=>{
+        const sg=d.grades.filter(g=>g.subject===s.name);
+        const sm=calcWeightedMean(sg.filter(g=>g.type==='written'),sg.filter(g=>g.type==='oral'),ratio);
+        const pct=sm?Math.max(0,Math.min(100,((6-sm)/5)*100)):0;
+        const bc=sm<=2?'var(--leaf)':sm<=3?'var(--sun)':'var(--accent)';
+        return `<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-weight:800;font-size:0.86rem;">${s.name}</span>
+          <span class="${gradePillClass(sm||3)}" style="font-size:0.76rem;">${sm?fmtMean(sm):'—'}</span>
+        </div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${bc};"></div></div></div>`;
+      }).join('')+'</div>';
+  }
+
+  const imp=calcImprovement(d.grades);
+  const impCard=document.getElementById('mostImprovedCard');
+  if(imp){
+    impCard.style.display='block';
+    document.getElementById('mostImprovedContent').innerHTML=`<div style="display:flex;align-items:center;gap:12px;">
+      <div style="font-size:2rem;">🚀</div>
+      <div>
+        <div style="font-weight:800;color:var(--leaf2);">${imp.subject}</div>
+        <div style="font-size:0.83rem;font-weight:700;color:var(--text-light);">
+          <span class="${gradePillClass(imp.from)}" style="font-size:0.76rem;">${imp.from}</span>
+          → <span class="${gradePillClass(imp.to)}" style="font-size:0.76rem;">${imp.to}</span>
+          <span style="color:var(--leaf2);margin-left:4px;">↑ ${imp.delta.toFixed(1)} pts better!</span>
+        </div>
+      </div></div>`;
+  }else{impCard.style.display='none';}
+}
+
+function renderJourneyMap(stage) {
+  const stages=currentPersona==='f1'?JOURNEY_F1:JOURNEY_FAIRY;
+  const path=document.getElementById('journeyPath');
+  let html='';
+  stages.forEach((s,i)=>{
+    const isDone=i<stage,isCurrent=i===stage;
+    const ic=isDone?'done':isCurrent?'current':'future';
+    const nc=isCurrent?'cn':'';
+    html+=`<div class="journey-stage">
+      <div class="journey-stage-icon ${ic}">${s.icon}</div>
+      <div class="journey-stage-name ${nc}">${s.name}</div>
+      <div class="journey-sem-label">${isDone?'✅':'Sem '+(i+1)}</div>
+    </div>`;
+    if(i<stages.length-1)html+=`<div class="journey-connector ${i<stage?'done-line':'future-line'}"></div>`;
+  });
+  path.innerHTML=html;
+  const cur=stages[stage]||stages[0];
+  document.getElementById('journeyStatus').textContent=
+    stage===4?'🎉 FINAL DESTINATION REACHED! Legendary performance!'
+    :`Now at: ${cur.icon} ${cur.name} — complete semester to advance!`;
+}
+
+function renderSkillsGrid(unlocked) {
+  document.getElementById('skillsGrid').innerHTML=BIBBLE_SKILLS.map(sk=>
+    `<div class="skill-badge ${unlocked.includes(sk.id)?'unlocked':'locked'}">
+      <div class="skill-emoji">${sk.emoji}</div>
+      <div class="skill-name">${sk.name}</div>
+      <div class="skill-desc">${unlocked.includes(sk.id)?sk.desc:'???'}</div>
+    </div>`
+  ).join('');
+}
+
+function renderGrades() {
+  const d=getData();
+  const grades=d.grades;
+  const ratio=d.gpaRatio||{written:60,oral:40};
+
+  const sb=document.getElementById('semesterBannerGrades');
+  if(d.semester.year||d.semester.classLevel){
+    const parts=[d.semester.year,d.semester.classLevel,d.semester.child].filter(Boolean);
+    sb.innerHTML=`<div class="semester-banner">📅 ${parts.join(' · ')} &nbsp;|&nbsp; ${d.semester.start||'?'} → ${d.semester.end||'?'}</div>`;
+  }else{sb.innerHTML='';}
+
+  const tbody=document.getElementById('gradeTableBody');
+  if(!grades.length){
+    tbody.innerHTML='<tr><td colspan="8" style="color:var(--text-light);text-align:center;padding:18px;font-weight:700;">No grades yet — add your first! ✨</td></tr>';
+  }else{
+    tbody.innerHTML=[...grades].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(g=>{
+      const realIdx=grades.indexOf(g);
+      const euros=eurosForGrade(g.grade,g.type,d.euroRules);
+      return `<tr>
+        <td style="font-size:0.78rem;">${g.date}</td>
+        <td style="font-weight:700;">${g.subject}</td>
+        <td><span style="font-size:0.74rem;background:${g.type==='written'?'#dbeafe':'#fce7f3'};padding:1px 7px;border-radius:99px;font-weight:700;color:${g.type==='written'?'#1e40af':'#9d174d'};">${g.type==='written'?'Written':'Oral'}</span></td>
+        <td style="font-size:0.78rem;color:var(--text-light);">${g.topic||'—'}</td>
+        <td><span class="${gradePillClass(g.grade)}">${g.grade}</span></td>
+        <td style="font-weight:800;color:#b45309;">${(g.pts||0)>0?'⭐'+(g.pts||0):'—'}</td>
+        <td style="font-weight:800;color:var(--leaf2);">${euros>0?'€'+euros.toFixed(2):'—'}</td>
+        <td><button class="btn-danger" onclick="deleteGrade(${realIdx})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  const mtbody=document.getElementById('meanTableBody');
+  if(!d.subjects.length){
+    mtbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:14px;color:var(--text-light);">Add subjects in Setup first.</td></tr>';
+  }else{
+    let gpas=[];
+    mtbody.innerHTML=d.subjects.map(s=>{
+      const sg=grades.filter(g=>g.subject===s.name);
+      const wm=calcMean(sg.filter(g=>g.type==='written'));
+      const om=calcMean(sg.filter(g=>g.type==='oral'));
+      const wt=calcWeightedMean(sg.filter(g=>g.type==='written'),sg.filter(g=>g.type==='oral'),ratio);
+      if(wt!==null)gpas.push(wt);
+      return `<tr>
+        <td style="font-weight:800;">${s.name}</td>
+        <td>${wm!==null?`<span class="${gradePillClass(wm)} mean-highlight">${fmtMean(wm)}</span>`:'—'}</td>
+        <td>${om!==null?`<span class="${gradePillClass(om)} mean-highlight">${fmtMean(om)}</span>`:'—'}</td>
+        <td>${wt!==null?`<span class="${gradePillClass(wt)} mean-highlight">${fmtMean(wt)}</span>`:'—'}</td>
+      </tr>`;
+    }).join('');
+    const overall=gpas.length?gpas.reduce((a,b)=>a+b,0)/gpas.length:null;
+    const badge=document.getElementById('overallGPABadge');
+    badge.textContent=overall?overall.toFixed(2):'—';
+    badge.style.color=overall?overall<=2?'var(--leaf2)':overall<=3?'var(--sun2)':'var(--accent)':'var(--text-light)';
+    document.getElementById('overallGPALabel').textContent=`Overall Weighted GPA (Written ${ratio.written}% / Oral ${ratio.oral}%)`;
+  }
+}
+
+function renderRewards() {
+  const d=getData();
+  const acc=d.accessories;
+  const shopPts=Math.max(0,(d.achievePts||0)+Math.floor((d.gritPts||0)/5)-(acc.pointsSpent||0));
+  document.getElementById('shopPointsDisplay').textContent=`⭐ ${shopPts}`;
+
+  ['Head','Cloth','Decor'].forEach(cat=>{
+    const el=document.getElementById('shop'+cat);if(!el)return;
+    el.innerHTML=SHOP.filter(i=>i.cat===cat.toLowerCase()).map(item=>{
+      const owned=(acc.owned||[]).includes(item.id);
+      const equipped=(acc.equipped||[]).includes(item.id);
+      let cls='acc-item';
+      if(equipped)cls+=' equipped';else if(owned)cls+=' owned';else if(shopPts<item.pts)cls+=' locked';
+      const lbl=equipped?'✅ Equipped':owned?'Tap to equip':`⭐${item.pts}`;
+      return `<div class="${cls}" onclick="handleShop('${item.id}',${item.pts})">
+        <div class="acc-emoji">${item.emoji}</div><div class="acc-name">${item.name}</div><div class="acc-cost">${lbl}</div>
+      </div>`;
+    }).join('');
+  });
+
+  const r=d.euroRules;
+  ['rw1','rw2','rw3','ro1','ro2','ro3'].forEach((id,i)=>{
+    const el=document.getElementById(id);const k=['w1','w2','w3','o1','o2','o3'][i];
+    if(el)el.value=r[k]??'';
+  });
+
+  const totalEarned=d.grades.reduce((s,g)=>s+eurosForGrade(g.grade,g.type,d.euroRules),0);
+  const totalPaidOut=(d.payouts||[]).reduce((s,p)=>s+Number(p.amount),0);
+  const owed=Math.max(0,totalEarned-totalPaidOut);
+  document.getElementById('euroEarned').textContent=`€${totalEarned.toFixed(2)}`;
+  document.getElementById('euroPaidOut').textContent=`€${totalPaidOut.toFixed(2)}`;
+  document.getElementById('euroOwed').textContent=`€${owed.toFixed(2)}`;
+
+  const phEl=document.getElementById('payoutHistory');
+  phEl.innerHTML=(d.payouts||[]).length?
+    '<div style="font-size:0.8rem;color:var(--text-light);font-weight:700;margin:8px 0 5px;">💶 Payout history:</div>'+
+    d.payouts.slice().reverse().map((p,ri)=>`<div class="payout-entry">
+      <div><div class="p-amount">€${Number(p.amount).toFixed(2)}</div>
+      <div class="p-meta">${p.date}${p.note?' · ':''}<span>${p.note||''}</span></div></div>
+      <button class="btn-danger" onclick="deletePayout(${d.payouts.length-1-ri})">✕</button>
+    </div>`).join(''):'';
+
+  const earning=d.grades.filter(g=>eurosForGrade(g.grade,g.type,d.euroRules)>0);
+  document.getElementById('euroBreakdown').innerHTML=earning.length
+    ?earning.slice().reverse().map(g=>`<span class="reward-chip">💶 ${g.subject} — Grade ${g.grade} → €${eurosForGrade(g.grade,g.type,d.euroRules).toFixed(2)}</span>`).join('')
+    :'<div style="color:var(--text-light);font-size:0.84rem;">No euros earned yet. Keep going! ✨</div>';
+
+  renderWishList(totalEarned,totalPaidOut);
+}
+
+function renderSetup() {
+  const d=getData();
+  const sem=d.semester;
+  ['semStart','semEnd','schoolYear','childName','petName'].forEach(id=>{
+    const m={semStart:'start',semEnd:'end',schoolYear:'year',childName:'child',petName:'petName'};
+    const el=document.getElementById(id);if(el)el.value=sem[m[id]]||'';
+  });
+  const cl=document.getElementById('classLevel');if(cl)cl.value=sem.classLevel||'';
+  const rw=document.getElementById('ratioWritten'),ro=document.getElementById('ratioOral');
+  if(rw)rw.value=d.gpaRatio?.written||60;
+  if(ro)ro.value=d.gpaRatio?.oral||40;
+
+  const sl=document.getElementById('subjectList');
+  sl.innerHTML=!d.subjects.length?'<div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No subjects yet.</div>':
+    d.subjects.map((s,i)=>`<div style="display:flex;align-items:flex-start;gap:8px;background:#ede9fe;border-radius:11px;padding:8px 12px;margin:4px 0;">
+      <div style="flex:1;"><div style="font-weight:800;color:var(--purple);">📚 ${s.name}</div>
+      ${(s.topics||[]).length?`<div style="margin-top:3px;">${s.topics.map(t=>`<span class="topic-badge">${t}</span>`).join('')}</div>`:''}</div>
+      <button onclick="removeSubject(${i})" style="background:none;border:none;cursor:pointer;color:#9b72d0;font-size:1.1rem;">✕</button>
+    </div>`).join('');
+
+  const sel=document.getElementById('gradeSubject'),taskSel=document.getElementById('taskSubject');
+  const opts='<option value="">— choose —</option>'+d.subjects.map(s=>`<option value="${s.name}">${s.name}</option>`).join('')+'<option value="__other__">Other…</option>';
+  if(sel){const cv=sel.value;sel.innerHTML=opts;if(cv)sel.value=cv;}
+  if(taskSel){const cv=taskSel.value;taskSel.innerHTML=opts.replace('<option value="__other__">Other…</option>','');if(cv)taskSel.value=cv;}
+
+  document.getElementById('currentStageLabel').textContent=(currentPersona==='f1'?JOURNEY_F1:JOURNEY_FAIRY)[d.journeyStage]?.name||'';
+}
+
+function renderWishList(totalEarned,totalPaidOut) {
+  const d=getData(),el=document.getElementById('wishListDisplay');if(!el)return;
+  if(!d.wishList.length){el.innerHTML='<div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No wishes yet! 🌟</div>';return;}
+  const owed=Math.max(0,totalEarned-totalPaidOut);
+  el.innerHTML=d.wishList.map((w,i)=>{
+    const pct=Math.min(100,(owed/w.cost)*100);
+    return `<div class="wish-item">
+      <div style="font-size:1.5rem;">${owed>=w.cost?'🎉':'🌟'}</div>
+      <div class="wish-info"><div class="wish-name">${w.name}</div>
+      <div class="wish-progress">€${owed.toFixed(2)} / €${w.cost.toFixed(2)} ${owed>=w.cost?'— Ready! 🎊':`(${pct.toFixed(0)}%)`}</div>
+      <div class="wish-progress-bar"><div class="wish-progress-fill" style="width:${pct}%"></div></div></div>
+      <button class="btn-danger" onclick="removeWish(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function renderGallery() {
+  const d=getData();
+  const grid=document.getElementById('galleryGrid'),empty=document.getElementById('galleryEmpty');
+  const gallery=d.gallery||[];
+  if(!gallery.length){empty.style.display='block';grid.innerHTML='';return;}
+  empty.style.display='none';
+  grid.innerHTML=gallery.slice().reverse().map((item,ri)=>{
+    const realIdx=gallery.length-1-ri;
+    return `<div class="gallery-item">
+      <img class="gallery-thumb" src="${item.dataUrl}" alt="Grade ${item.grade} ${item.subject}">
+      <div class="gallery-meta">
+        <div class="gallery-subject">${item.subject} — Grade ${item.grade}</div>
+        <div class="gallery-date">${item.date}</div>
+        <button class="gallery-dl" onclick="downloadGalleryItem(${realIdx})">💾 Download</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTasks() {
+  const d=getData();
+  const el=document.getElementById('taskListDisplay');if(!el)return;
+  const tasks=d.tasks||[];
+  if(!tasks.length){el.innerHTML='<div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">No assignments yet!</div>';return;}
+  const now=new Date();
+  el.innerHTML=tasks.map((t,i)=>{
+    const due=new Date(t.due);
+    const daysLeft=Math.ceil((due-now)/(1000*60*60*24));
+    const overdue=daysLeft<0&&!t.done;
+    return `<div class="assignment-card ${overdue?'overdue':''} ${t.done?'done':''}">
+      <div class="asgn-title">${t.title}</div>
+      <div class="asgn-meta">📚 ${t.subject} &nbsp;·&nbsp; 📅 ${t.due} &nbsp;·&nbsp; ${overdue?'⚠️ OVERDUE':daysLeft===0?'⏰ Due today!':daysLeft===1?'🔔 Due tomorrow':'📅 '+daysLeft+' days left'}</div>
+      <span class="asgn-diff diff-${t.difficulty||'medium'}">${t.difficulty==='easy'?'🟢 Easy':t.difficulty==='hard'?'🔴 Hard':'🟡 Medium'}</span>
+      <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+        ${!t.done?`<button class="grit-award-btn" onclick="awardGrit(${i})">💪 +Grit Points (I worked hard!)</button>`:''}
+        <button onclick="toggleTaskDone(${i})" style="background:${t.done?'#f3f4f6':'#d1fae5'};border:none;border-radius:99px;padding:4px 12px;font-size:0.76rem;font-weight:800;cursor:pointer;color:${t.done?'var(--text-light)':'var(--leaf2)'};">${t.done?'↩️ Undo':'✅ Done'}</button>
+        <button class="btn-danger" onclick="deleteTask(${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderWellbeing() {
+  const d=getData();
+  const logs=d.mhLog||[];
+  const gratList=d.gratitude||[];
+
+  const mhEl=document.getElementById('mhHistory');
+  if(!logs.length){mhEl.innerHTML='<div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">No entries yet. Check in daily! 🌤️</div>';}
+  else{
+    mhEl.innerHTML=logs.slice(-10).reverse().map(l=>{
+      const weather=['','⛈️','🌧️','🌦️','⛅','🌤️','☀️','🌈','⭐','🌟','🔆'][l.score]||'🌤️';
+      return `<div style="display:flex;align-items:center;gap:10px;background:#f7f3ff;border-radius:10px;padding:8px 11px;margin:4px 0;">
+        <span style="font-size:1.4rem;">${weather}</span>
+        <div><div style="font-weight:800;font-size:0.86rem;">${l.date} — ${l.score}/10</div>
+        ${l.stress?`<div style="font-size:0.74rem;color:var(--text-light);">${l.stress==='desk'?'🖊️ Desk stress':'💗 Heart stress'}</div>`:''}
+        ${l.note?`<div style="font-size:0.78rem;color:var(--text-light);font-style:italic;">"${l.note}"</div>`:''}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const gratEl=document.getElementById('gratitudeList');
+  if(!gratList.length){gratEl.innerHTML='<div style="color:var(--text-light);font-size:0.84rem;font-weight:600;">No entries yet 🙏</div>';}
+  else{
+    gratEl.innerHTML=gratList.slice(-8).reverse().map((g,ri)=>{
+      const realIdx=gratList.length-1-ri;
+      return `<div class="gratitude-entry">🌱 ${g.text} <span style="color:var(--leaf2);font-size:0.7rem;margin-left:6px;">${g.date}</span>
+        <button onclick="deleteGratitude(${realIdx})" style="background:none;border:none;cursor:pointer;color:var(--text-light);float:right;">✕</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS — GRADES
+// ══════════════════════════════════════════════════
+function handleSubjectChange(sel) {
+  const wrap=document.getElementById('customSubjectWrap');
+  wrap.style.display=sel.value==='__other__'?'block':'none';
+}
+
+function addGrade() {
+  const dateval=document.getElementById('gradeDate').value;
+  const subjSel=document.getElementById('gradeSubject').value;
+  const customSubj=document.getElementById('customSubjectInput').value.trim();
+  const subject=subjSel==='__other__'?customSubj:subjSel;
+  const type=document.getElementById('gradeType').value;
+  const grade=document.getElementById('gradeValue').value;
+  const topic=document.getElementById('gradeTopic').value.trim();
+  const note=document.getElementById('gradeNote').value.trim();
+  if(!dateval||!subject||!grade){alert('Please fill in date, subject, and grade!');return;}
+
+  const d=getData();
+  const prev=d.grades.filter(g=>g.subject===subject);
+  const prevMean=prev.length?prev.reduce((a,b)=>a+b.grade,0)/prev.length:null;
+  const pts=pointsForGrade(grade,prevMean);
+  const entry={date:dateval,subject,type,grade:Number(grade),topic,note,pts,id:Date.now()};
+
+  d.grades.push(entry);
+  d.achievePts=(d.achievePts||0)+pts;
+  save('grades',d.grades);save('achievePts',d.achievePts);
+
+  // Bibble skill unlock on Grade 1
+  let newSkill=null;
+  if(Number(grade)===1){
+    const cur=d.unlockedSkills||[];
+    const next=BIBBLE_SKILLS[cur.length];
+    if(next){d.unlockedSkills=[...cur,next.id];save('unlockedSkills',d.unlockedSkills);newSkill=next;}
+  }
+
+  document.getElementById('gradeTopic').value='';
+  document.getElementById('gradeNote').value='';
+  renderAll();spawnConfetti();
+  openCelebModal(entry,prevMean,pts,d,newSkill);
+}
+
+function deleteGrade(idx) {
+  if(!confirm('Remove this grade?'))return;
+  const d=getData();
+  const g=d.grades[idx];
+  if(g){d.achievePts=Math.max(0,(d.achievePts||0)-(g.pts||0));save('achievePts',d.achievePts);}
+  d.grades.splice(idx,1);save('grades',d.grades);renderAll();
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS — TASKS
+// ══════════════════════════════════════════════════
+function addTask() {
+  const subject=document.getElementById('taskSubject').value;
+  const due=document.getElementById('taskDue').value;
+  const title=document.getElementById('taskTitle').value.trim();
+  const difficulty=document.getElementById('taskDiff').value;
+  if(!title||!due){alert('Please fill in title and due date!');return;}
+  const d=getData();
+  d.tasks=[...(d.tasks||[]),{subject:subject||'General',due,title,difficulty,done:false,id:Date.now()}];
+  save('tasks',d.tasks);
+  document.getElementById('taskTitle').value='';
+  flashSuccess('taskSuccess');renderTasks();
+}
+
+function awardGrit(idx) {
+  const d=getData();
+  const t=d.tasks[idx]; if(!t)return;
+  const gritAward=t.difficulty==='hard'?15:t.difficulty==='medium'?10:5;
+  d.gritPts=(d.gritPts||0)+gritAward;
+  save('gritPts',d.gritPts);
+  alert(`💪 +${gritAward} Grit Points for your effort on "${t.title}"! Keep pushing!`);
+  renderAll();
+}
+
+function toggleTaskDone(idx) {
+  const d=getData();d.tasks[idx].done=!d.tasks[idx].done;save('tasks',d.tasks);renderTasks();
+}
+
+function deleteTask(idx) {
+  if(!confirm('Remove this assignment?'))return;
+  const d=getData();d.tasks.splice(idx,1);save('tasks',d.tasks);renderTasks();
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS — WELLBEING
+// ══════════════════════════════════════════════════
+let pendingMHScore=null;
+
+function setMHScore(score,el) {
+  document.querySelectorAll('.mh-icon').forEach(i=>i.classList.remove('sel'));
+  el.classList.add('sel');
+  pendingMHScore=score;
+  const weather=['','⛈️','🌧️','🌦️','⛅','🌤️','☀️','🌈','⭐','🌟','🔆'][score]||'🌤️';
+  document.getElementById('mhScoreDisplay').textContent=`${weather} ${score}/10`;
+
+  const stressCard=document.getElementById('stressTypeCard');
+  const stressTitle=document.getElementById('stressTypeTitle');
+  if(score<=6){
+    stressCard.style.display='block';
+    stressTitle.textContent=currentPersona==='f1'?'What sector is the problem in?':'What kind of stress is this?';
+  }else{stressCard.style.display='none';}
+
+  // Save the score
+  const d=getData();
+  const entry={date:new Date().toISOString().split('T')[0],score,stress:null,note:null};
+  const logs=d.mhLog||[];
+  const todayIdx=logs.findIndex(l=>l.date===entry.date);
+  if(todayIdx>=0)logs[todayIdx]={...logs[todayIdx],score};
+  else logs.push(entry);
+  save('mhLog',logs);
+  renderHome();renderWellbeing();
+}
+
+function setStressType(type) {
+  document.getElementById('stressDesk').classList.toggle('active',type==='desk');
+  document.getElementById('stressHeart').classList.toggle('active',type==='heart');
+  const advice=type==='desk'?STRESS_DESK:STRESS_HEART;
+  const el=document.getElementById('stressCopingAdvice');
+  el.style.display='block';
+  el.textContent=advice[Math.floor(Math.random()*advice.length)];
+
+  const d=getData();
+  const logs=d.mhLog||[];
+  const today=new Date().toISOString().split('T')[0];
+  const idx=logs.findIndex(l=>l.date===today);
+  if(idx>=0)logs[idx].stress=type;
+  save('mhLog',logs);renderWellbeing();
+}
+
+function addGratitude() {
+  const input=document.getElementById('gratitudeInput');
+  const text=input.value.trim();if(!text)return;
+  const d=getData();
+  d.gratitude=[...(d.gratitude||[]),{text,date:new Date().toISOString().split('T')[0],id:Date.now()}];
+  save('gratitude',d.gratitude);input.value='';renderWellbeing();
+}
+
+function deleteGratitude(idx) {
+  const d=getData();d.gratitude.splice(idx,1);save('gratitude',d.gratitude);renderWellbeing();
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS — SETUP
+// ══════════════════════════════════════════════════
+function saveSemester() {
+  const d=getData();
+  d.semester={
+    start:document.getElementById('semStart').value,
+    end:document.getElementById('semEnd').value,
+    year:document.getElementById('schoolYear').value,
+    child:document.getElementById('childName').value,
+    petName:document.getElementById('petName').value.trim()||'Bibble',
+    classLevel:document.getElementById('classLevel').value,
+  };
+  save('semester',d.semester);flashSuccess('semSuccess');renderAll();
+}
+
+function saveGPARatio() {
+  const w=parseInt(document.getElementById('ratioWritten').value)||60;
+  const o=parseInt(document.getElementById('ratioOral').value)||40;
+  if(w+o!==100){alert('Written + Oral weights must add up to exactly 100!');return;}
+  save('gpaRatio',{written:w,oral:o});flashSuccess('ratioSuccess');renderAll();
+}
+
+function addSubject() {
+  const name=document.getElementById('newSubject').value.trim();if(!name)return;
+  const topics=document.getElementById('newTopics').value.trim().split(',').map(t=>t.trim()).filter(Boolean);
+  const d=getData();
+  if(d.subjects.find(s=>s.name.toLowerCase()===name.toLowerCase())){alert('Already exists!');return;}
+  d.subjects.push({name,topics});save('subjects',d.subjects);
+  document.getElementById('newSubject').value='';document.getElementById('newTopics').value='';
+  renderSetup();
+}
+
+function removeSubject(idx) {
+  if(!confirm('Remove subject?'))return;
+  const d=getData();d.subjects.splice(idx,1);save('subjects',d.subjects);renderSetup();
+}
+
+function saveEuroRules() {
+  const keys=['w1','w2','w3','o1','o2','o3'],ids=['rw1','rw2','rw3','ro1','ro2','ro3'],rules={};
+  keys.forEach((k,i)=>rules[k]=parseFloat(document.getElementById(ids[i]).value)||0);
+  save('euroRules',rules);flashSuccess('euroRulesSuccess');renderAll();
+}
+
+function advanceJourney() {
+  const d=getData();
+  const stages=currentPersona==='f1'?JOURNEY_F1:JOURNEY_FAIRY;
+  if(d.journeyStage>=stages.length-1){alert('You\'ve already reached the final destination! 🎉');return;}
+  d.journeyStage=(d.journeyStage||0)+1;
+  save('journeyStage',d.journeyStage);
+  const stage=stages[d.journeyStage];
+  document.getElementById('journeyModalIcon').textContent=stage.icon;
+  document.getElementById('journeyModalTitle').textContent=stage.name;
+  document.getElementById('journeyModalMsg').textContent=stage.msg;
+  document.getElementById('journeyModal').classList.add('open');
+  spawnConfetti();renderAll();
+}
+
+function closeJourneyModal(){document.getElementById('journeyModal').classList.remove('open');}
+
+function clearAllData() {
+  if(!confirm('⚠️ Reset ALL data? This cannot be undone.'))return;
+  ['semester','subjects','grades','euroRules','accessories','achievePts','gritPts','payouts',
+   'bibbleColors','wishList','journeyStage','unlockedSkills','gallery','tasks','mhLog','gratitude','gpaRatio']
+  .forEach(k=>S.del(k));
+  renderAll();alert('All data cleared. Fresh start! ✨');
+}
+
+// ══════════════════════════════════════════════════
+//  ACTIONS — REWARDS
+// ══════════════════════════════════════════════════
+function handleShop(id,pts) {
+  const d=getData(),acc=d.accessories;
+  const shopPts=Math.max(0,(d.achievePts||0)+Math.floor((d.gritPts||0)/5)-(acc.pointsSpent||0));
+  if((acc.equipped||[]).includes(id)){acc.equipped=acc.equipped.filter(i=>i!==id);save('accessories',acc);renderAll();return;}
+  if((acc.owned||[]).includes(id)){acc.equipped=[...(acc.equipped||[]),id];save('accessories',acc);renderAll();return;}
+  if(shopPts<pts){alert(`Need ⭐${pts} but have ⭐${shopPts}. Keep earning! ✨`);return;}
+  const item=SHOP.find(i=>i.id===id);
+  if(!confirm(`Buy "${item?.name}" for ⭐${pts}? It will appear on Bibble!`))return;
+  acc.owned=[...(acc.owned||[]),id];
+  acc.equipped=[...(acc.equipped||[]),id];
+  acc.pointsSpent=(acc.pointsSpent||0)+pts;
+  save('accessories',acc);spawnConfetti();renderAll();
+}
+
+function showPayoutForm(){
+  document.getElementById('payoutForm').style.display='block';
+  document.getElementById('payoutDate').value=new Date().toISOString().split('T')[0];
+}
+function hidePayoutForm(){
+  document.getElementById('payoutForm').style.display='none';
+  document.getElementById('payoutAmount').value='';
+  document.getElementById('payoutNote').value='';
+}
+function recordPayout() {
+  const amount=parseFloat(document.getElementById('payoutAmount').value);
+  const date=document.getElementById('payoutDate').value;
+  const note=document.getElementById('payoutNote').value.trim();
+  if(!amount||amount<=0){alert('Enter a valid amount!');return;}
+  const d=getData();
+  const earned=d.grades.reduce((s,g)=>s+eurosForGrade(g.grade,g.type,d.euroRules),0);
+  const paid=d.payouts.reduce((s,p)=>s+Number(p.amount),0);
+  if(amount>earned-paid+0.001){alert(`Max payout: €${(earned-paid).toFixed(2)}`);return;}
+  d.payouts.push({amount,date,note,id:Date.now()});
+  save('payouts',d.payouts);flashSuccess('payoutSuccess');
+  setTimeout(hidePayoutForm,1800);renderAll();
+}
+function deletePayout(idx){
+  if(!confirm('Remove payout?'))return;
+  const d=getData();d.payouts.splice(idx,1);save('payouts',d.payouts);renderAll();
+}
+function addWish(){
+  const name=document.getElementById('wishName').value.trim();
+  const cost=parseFloat(document.getElementById('wishCost').value);
+  if(!name||!cost||cost<=0){alert('Enter name and target cost!');return;}
+  const d=getData();d.wishList.push({name,cost,id:Date.now()});
+  save('wishList',d.wishList);
+  document.getElementById('wishName').value='';document.getElementById('wishCost').value='';
+  renderAll();
+}
+function removeWish(idx){const d=getData();d.wishList.splice(idx,1);save('wishList',d.wishList);renderAll();}
+
+// ══════════════════════════════════════════════════
+//  CELEBRATION MODAL
+// ══════════════════════════════════════════════════
+function drawCelebCanvas(canvas,grade,subject,petName,childName,d) {
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width=400,H=canvas.height=400;
+  const g=Number(grade);
+  const pals={1:['#fef9c3','#d1fae5'],2:['#ede9fe','#fce4ec'],3:['#e8f4fd','#f0fff4'],4:['#fff7ed','#fce4ec'],5:['#f3f4f6','#e8f4fd'],6:['#f3f4f6','#f9fafb']};
+  const cols=pals[g]||pals[3];
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,cols[0]);bg.addColorStop(1,cols[1]);
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  if(g<=2){
+    for(let i=0;i<32;i++){
+      ctx.save();ctx.translate(Math.random()*W,Math.random()*H*0.6);ctx.rotate(Math.random()*Math.PI*2);
+      ctx.fillStyle=['#ffd166','#ef476f','#06d6a0','#7b5ea7','#118ab2'][i%5];
+      ctx.fillRect(-4,-2,8,4);ctx.restore();
+    }
+    for(let i=0;i<8;i++){ctx.font=`${14+Math.random()*12}px serif`;ctx.fillText('✨',Math.random()*(W-30)+10,Math.random()*H*0.5+10);}
+  }
+
+  // draw mini Bibble on celebration card
+  const bx=W/2-30,by=H/2+10,bs=0.72;
+  const {body:B,belly:V,wing:WC,eye:E,beak:BK}=d.bibbleColors;
+  // wings
+  [[bx-24*bs,by-2*bs,-1],[bx+24*bs,by-2*bs,1]].forEach(([wx,wy,dir])=>{
+    ctx.save();ctx.translate(wx,wy);ctx.rotate(dir*0.5);
+    ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(dir*7,-11*bs,dir*18,-13*bs,dir*16,-2*bs);ctx.bezierCurveTo(dir*14,8*bs,dir*5,9*bs,0,0);
+    ctx.fillStyle=WC;ctx.fill();ctx.restore();
+  });
+  // body
+  ctx.beginPath();ctx.arc(bx,by,24*bs,0,Math.PI*2);ctx.fillStyle=B;ctx.fill();
+  ctx.beginPath();ctx.ellipse(bx,by+4*bs,11*bs,13*bs,0,0,Math.PI*2);ctx.fillStyle=V;ctx.fill();
+  // fur tufts
+  for(let i=0;i<8;i++){const a=(i/8)*Math.PI*2;ctx.beginPath();const R2=24*bs;ctx.moveTo(bx+Math.cos(a)*(R2-1),by+Math.sin(a)*(R2-1));ctx.lineTo(bx+Math.cos(a-0.3)*(R2-5),by+Math.sin(a-0.3)*(R2-5));ctx.lineTo(bx+Math.cos(a)*(R2+6),by+Math.sin(a)*(R2+6));ctx.lineTo(bx+Math.cos(a+0.3)*(R2-5),by+Math.sin(a+0.3)*(R2-5));ctx.closePath();ctx.fillStyle=B;ctx.fill();}
+  // eyes
+  [-9*bs,9*bs].forEach(ex=>{
+    ctx.beginPath();ctx.ellipse(bx+ex,by-5*bs,8*bs,8*bs,0,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();
+    ctx.beginPath();ctx.arc(bx+ex,by-5*bs,5*bs,0,Math.PI*2);ctx.fillStyle=E;ctx.fill();
+    ctx.beginPath();ctx.arc(bx+ex,by-5*bs,3*bs,0,Math.PI*2);ctx.fillStyle='#111';ctx.fill();
+    ctx.beginPath();ctx.arc(bx+ex+2*bs,by-8*bs,2*bs,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fill();
+  });
+  // beak
+  ctx.beginPath();ctx.moveTo(bx-4*bs,by+3*bs);ctx.quadraticCurveTo(bx,by,bx+4*bs,by+3*bs);ctx.quadraticCurveTo(bx,by+5*bs,bx-4*bs,by+3*bs);ctx.fillStyle=BK;ctx.fill();
+
+  // grade badge
+  const badgeBg={1:'#d1fae5',2:'#dcfce7',3:'#fef9c3',4:'#fed7aa',5:'#fee2e2',6:'#fecaca'};
+  const badgeTxt={1:'#065f46',2:'#166534',3:'#854d0e',4:'#9a3412',5:'#991b1b',6:'#7f1d1d'};
+  const bxr=W/2+22,byr=H/2-18;
+  if(ctx.roundRect)ctx.roundRect(bxr,byr,104,44,12);else ctx.rect(bxr,byr,104,44);
+  ctx.fillStyle=badgeBg[g]||'#ede9fe';ctx.fill();
+  ctx.fillStyle=badgeTxt[g]||'#7b5ea7';ctx.textAlign='center';
+  ctx.font='bold 13px Nunito,sans-serif';ctx.fillText(`Grade ${g}`,bxr+52,byr+15);
+  ctx.font='bold 10px Nunito,sans-serif';ctx.fillText(subject,bxr+52,byr+30);
+  ctx.font='26px serif';ctx.fillText(GRADE_INFO[g]?.emoji||'✨',bxr+72,byr-4);
+
+  ctx.textAlign='center';ctx.fillStyle='rgba(100,80,130,0.45)';ctx.font='10px Nunito,sans-serif';
+  ctx.fillText(`${childName||'⭐'} · ${petName||'Bibble'}`,W/2,H-10);
+  ctx.textAlign='start';
+}
+
+async function openCelebModal(entry,prevMean,pts,d,newSkill) {
+  const modal=document.getElementById('celebModal');
+  modal.classList.add('open');
+
+  const gNum=Number(entry.grade);
+  const info=GRADE_INFO[gNum]||GRADE_INFO[3];
+  const petName=d.semester.petName||'Bibble';
+  const child=d.semester.child||'Star Learner';
+
+  document.getElementById('celebEmoji').textContent=info.emoji;
+  document.getElementById('celebTitle').textContent=`${info.prefix} ${entry.subject}!`;
+  document.getElementById('celebPoints').textContent=`⭐ +${pts} Achievement Points earned!`;
+
+  const skillEl=document.getElementById('celebSkill');
+  if(newSkill){skillEl.style.display='block';skillEl.textContent=`${newSkill.emoji} New Bibble Skill Unlocked: ${newSkill.name}! "${newSkill.desc}"`;}
+  else{skillEl.style.display='none';}
+
+  const impEl=document.getElementById('celebImprove');
+  if(prevMean!==null&&gNum<prevMean-0.3){impEl.style.display='block';impEl.textContent=`📈 Improved by ${(prevMean-gNum).toFixed(1)} pts in ${entry.subject}! 🚀`;}
+  else{impEl.style.display='none';}
+
+  document.getElementById('celebMsg').textContent='…';
+  const canvas=document.getElementById('celebCanvas');
+  canvas.style.display='block';
+  document.getElementById('celebLoader').style.display='none';
+  drawCelebCanvas(canvas,gNum,entry.subject,petName,child,d);
+
+  // Save to gallery (max 50)
+  const dataUrl=canvas.toDataURL('image/png');
+  const gallery=d.gallery||[];
+  gallery.push({dataUrl,date:entry.date,subject:entry.subject,grade:gNum,id:Date.now()});
+  if(gallery.length>50)gallery.shift();
+  save('gallery',gallery);
+  renderGallery();
+
+  const ai=await fetchAIMessage();
+  const fallbacks=currentPersona==='f1'?FALLBACK_F1:FALLBACK_FAIRY;
+  document.getElementById('celebMsg').textContent=ai||fallbacks[Math.floor(Math.random()*fallbacks.length)];
+}
+
+function closeCelebModal(){
+  document.getElementById('celebModal').classList.remove('open');
+  document.getElementById('celebLoader').style.display='flex';
+  document.getElementById('celebCanvas').style.display='none';
+}
+
+function downloadCelebration(){
+  const a=document.createElement('a');a.download='celebration.png';a.href=document.getElementById('celebCanvas').toDataURL();a.click();
+}
+
+function downloadGalleryItem(idx){
+  const d=getData();const item=(d.gallery||[])[idx];if(!item)return;
+  const a=document.createElement('a');a.download=`grade-${item.grade}-${item.subject}-${item.date}.png`;a.href=item.dataUrl;a.click();
+}
+
+// ══════════════════════════════════════════════════
+//  SEMESTER RECAP
+// ══════════════════════════════════════════════════
+function openRecapModal(){
+  const d=getData();
+  if(!d.grades.length){alert('No grades yet!');return;}
+  document.getElementById('recapModal').classList.add('open');
+  drawRecapCanvas(d);
+}
+function closeRecapModal(){document.getElementById('recapModal').classList.remove('open');}
+function downloadRecap(){
+  const a=document.createElement('a');a.download='semester-recap.png';a.href=document.getElementById('recapCanvas').toDataURL();a.click();
+}
+
+function drawRecapCanvas(d) {
+  const canvas=document.getElementById('recapCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=400,H=620;canvas.width=W;canvas.height=H;
+  const ratio=d.gpaRatio||{written:60,oral:40};
+
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#fce4ec');bg.addColorStop(0.5,'#ede9fe');bg.addColorStop(1,'#e8f4fd');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  const dc=['#ffd166','#ef476f','#06d6a0','#7b5ea7','#118ab2'];
+  for(let i=0;i<20;i++){ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,2+Math.random()*4,0,Math.PI*2);ctx.fillStyle=dc[i%dc.length]+'55';ctx.fill();}
+
+  const petName=d.semester.petName||'Bibble';
+  const child=d.semester.child||'Star Learner';
+  const year=d.semester.year||'';
+  const classLvl=d.semester.classLevel||'';
+  const isF1=currentPersona==='f1';
+
+  ctx.fillStyle='#7b5ea7';
+  if(ctx.roundRect)ctx.roundRect(18,16,W-36,66,14);else ctx.rect(18,16,W-36,66);
+  ctx.fill();
+  ctx.fillStyle='white';ctx.textAlign='center';
+  ctx.font='bold 19px "Fredoka One",cursive';ctx.fillText(isF1?'🏎️ Season Review':'🏆 Semester Recap',W/2,48);
+  ctx.font='bold 11px Nunito,sans-serif';ctx.fillText([child,classLvl,year].filter(Boolean).join(' · '),W/2,68);
+
+  // GPA
+  const subjectNames=d.subjects.length?d.subjects.map(s=>s.name):[...new Set(d.grades.map(g=>g.subject))];
+  const gpas=subjectNames.map(sn=>{const sg=d.grades.filter(g=>g.subject===sn);return calcWeightedMean(sg.filter(g=>g.type==='written'),sg.filter(g=>g.type==='oral'),ratio);}).filter(m=>m!==null);
+  const overallGPA=gpas.length?gpas.reduce((a,b)=>a+b,0)/gpas.length:null;
+
+  const mc=overallGPA?overallGPA<=2?'#d1fae5':overallGPA<=3?'#fef9c3':'#fee2e2':'#e5e7eb';
+  ctx.fillStyle=mc;
+  if(ctx.roundRect)ctx.roundRect(18,94,W-36,50,12);else ctx.rect(18,94,W-36,50);
+  ctx.fill();
+  ctx.fillStyle='#2d3047';ctx.textAlign='center';
+  ctx.font='bold 11px Nunito,sans-serif';ctx.fillText(isF1?'Overall Race Pace':'Overall Weighted GPA',W/2,112);
+  ctx.font='bold 22px "Fredoka One",cursive';ctx.fillText(overallGPA?overallGPA.toFixed(2):'—',W/2,136);
+
+  const totalPts=(d.achievePts||0)+Math.floor((d.gritPts||0)/5);
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  if(ctx.roundRect)ctx.roundRect(18,152,W-36,34,10);else ctx.rect(18,152,W-36,34);
+  ctx.fill();
+  ctx.fillStyle='#2d3047';ctx.font='bold 11px Nunito,sans-serif';
+  ctx.fillText(`⭐ ${totalPts} pts earned · 💪 ${d.gritPts||0} grit pts · ${d.grades.length} grades`,W/2,173);
+
+  let y=198;
+  ctx.textAlign='start';ctx.font='bold 11px Nunito,sans-serif';ctx.fillStyle='#6b7280';
+  ctx.fillText(isF1?'Sector Times':'Subject Performance',26,y);y+=18;
+  subjectNames.slice(0,7).forEach(subj=>{
+    const sg=d.grades.filter(g=>g.subject===subj);if(!sg.length)return;
+    const m=calcWeightedMean(sg.filter(g=>g.type==='written'),sg.filter(g=>g.type==='oral'),ratio);
+    if(!m)return;
+    const pct=Math.max(0.03,(6-m)/5);
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    if(ctx.roundRect)ctx.roundRect(26,y,W-52,24,7);else ctx.rect(26,y,W-52,24);ctx.fill();
+    ctx.fillStyle=m<=2?'#06d6a0':m<=3?'#ffd166':'#ef476f';
+    if(ctx.roundRect)ctx.roundRect(26,y,(W-52)*pct,24,7);else ctx.rect(26,y,(W-52)*pct,24);ctx.fill();
+    ctx.fillStyle='#2d3047';ctx.font='bold 10px Nunito,sans-serif';ctx.fillText(subj,34,y+16);
+    ctx.textAlign='end';ctx.fillText(m.toFixed(1),W-32,y+16);ctx.textAlign='start';
+    y+=30;
+  });
+
+  const imp=calcImprovement(d.grades);
+  if(imp){y+=4;ctx.fillStyle='#d1fae5';
+    if(ctx.roundRect)ctx.roundRect(18,y,W-36,48,12);else ctx.rect(18,y,W-36,48);ctx.fill();
+    ctx.fillStyle='#065f46';ctx.textAlign='center';ctx.font='bold 10px Nunito,sans-serif';ctx.fillText('📈 Most Improved',W/2,y+14);
+    ctx.font='bold 13px Nunito,sans-serif';ctx.fillText(`${imp.subject}: ${imp.from} → ${imp.to}  (↑${imp.delta.toFixed(1)})`,W/2,y+33);
+    ctx.textAlign='start';y+=56;
+  }
+
+  // Journey stage
+  const stages=isF1?JOURNEY_F1:JOURNEY_FAIRY;
+  const stage=stages[d.journeyStage]||stages[0];
+  y=Math.max(y,H-140);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  if(ctx.roundRect)ctx.roundRect(18,y,W-36,36,10);else ctx.rect(18,y,W-36,36);ctx.fill();
+  ctx.textAlign='center';ctx.fillStyle='#7b5ea7';ctx.font='bold 11px Nunito,sans-serif';
+  ctx.fillText(`${stage.icon} ${isF1?'Race Stage':'Adventure Stage'}: ${stage.name}`,W/2,y+22);
+  ctx.textAlign='start';
+
+  ctx.textAlign='center';ctx.fillStyle='rgba(100,80,130,0.5)';ctx.font='10px Nunito,sans-serif';
+  ctx.fillText(`${petName} is so proud of you! ✨`,W/2,H-10);
+  ctx.textAlign='start';
+}
+
+// ══════════════════════════════════════════════════
+//  ICAL EXPORT
+// ══════════════════════════════════════════════════
+function exportIcal() {
+  const d=getData();
+  const tasks=d.tasks||[];
+  if(!tasks.length){alert('No assignments to export! Add tasks first.');return;}
+  let ical='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//BibbleStudyTracker//EN\r\nCALSCALE:GREGORIAN\r\n';
+  tasks.forEach(t=>{
+    const uid=`task-${t.id||Date.now()}@bibble`;
+    const due=t.due.replace(/-/g,'');
+    const created=new Date().toISOString().replace(/[-:.]/g,'').slice(0,15)+'Z';
+    ical+=`BEGIN:VEVENT\r\nUID:${uid}\r\nDTSTAMP:${created}\r\nSUMMARY:📚 ${t.subject} — ${t.title}\r\nDTSTART;VALUE=DATE:${due}\r\nDTEND;VALUE=DATE:${due}\r\nDESCRIPTION:Difficulty: ${t.difficulty}. From Bibble's Study Tracker.\r\nEND:VEVENT\r\n`;
+  });
+  ical+='END:VCALENDAR';
+  const blob=new Blob([ical],{type:'text/calendar'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bibble-assignments.ics';a.click();
+}
+
+// ══════════════════════════════════════════════════
+//  DESIGN
+// ══════════════════════════════════════════════════
+const PALETTES = {
+  body: ['#c9b8ff','#f9c5d5','#b5d5f5','#c5e8b0','#ffd3b6','#fff0a0','#b8e0ff','#ffc8dd','#e8d5b7','#c8f0e8'],
+  belly:['#f3f0ff','#fff0f5','#e3f2fd','#f1f8e9','#fff8e1','#fffde7','#ddeeff','#fce4ec','#fafafa','#e8f5e9'],
+  wing: ['#a78bfa','#90caf9','#f48fb1','#a5d6a7','#ffcc80','#ce93d8','#fff176','#80deea','#ef9a9a','#80cbc4'],
+  eye:  ['#1a237e','#6a1b9a','#1b5e20','#bf360c','#006064','#37474f','#880e4f','#4e342e','#1565c0','#2e7d32'],
+  beak: ['#ff8f00','#f59e0b','#ef6c00','#e53935','#f06292','#ffd54f','#aed581','#4db6ac','#90caf9','#ce93d8'],
+};
+let designDraft=null;
+
+function initDesignPanel(){
+  const d=getData();
+  designDraft={...d.bibbleColors};
+  ['body','belly','wing','eye','beak'].forEach(part=>{
+    const cap=part.charAt(0).toUpperCase()+part.slice(1);
+    const row=document.getElementById('swatch'+cap);if(!row)return;
+    row.innerHTML=PALETTES[part].map(c=>
+      `<div class="swatch${designDraft[part]===c?' selected':''}" style="background:${c}" onclick="setColor('${part}','${c}',this)"></div>`
+    ).join('');
+    const ci=document.getElementById('custom'+cap);
+    if(ci){ci.value=designDraft[part];ci.oninput=e=>setColor(part,e.target.value,null);}
+  });
+  drawBibble('designCanvas',45,designDraft,[]);
+}
+
+function setColor(part,color,swatchEl){
+  designDraft[part]=color;
+  const cap=part.charAt(0).toUpperCase()+part.slice(1);
+  document.querySelectorAll(`#swatch${cap} .swatch`).forEach(s=>s.classList.remove('selected'));
+  if(swatchEl)swatchEl.classList.add('selected');
+  const ci=document.getElementById('custom'+cap);if(ci)ci.value=color;
+  drawBibble('designCanvas',45,designDraft,[]);
+}
+
+function saveBibbleColors(){
+  if(!designDraft)return;
+  save('bibbleColors',designDraft);
+  flashSuccess('designSuccess');
+}
+
+function resetBibbleColors(){
+  designDraft={body:'#c9b8ff',belly:'#f3f0ff',wing:'#a78bfa',eye:'#1a237e',beak:'#ff8f00'};
+  save('bibbleColors',designDraft);initDesignPanel();
+}
+
+// ══════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════
+function switchTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='design')initDesignPanel();
+  if(tab==='strategy')renderStrategy();
+  renderAll();
+}
+
+function flashSuccess(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.style.display='block';setTimeout(()=>el.style.display='none',2200);
+}
+
+function spawnConfetti(){
+  const cols=['#ffd166','#06d6a0','#ef476f','#7b5ea7','#118ab2','#c9b8ff','#a78bfa'];
+  for(let i=0;i<32;i++){
+    const el=document.createElement('div');el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';el.style.background=cols[Math.floor(Math.random()*cols.length)];
+    el.style.animationDelay=Math.random()*0.7+'s';el.style.transform=`rotate(${Math.random()*360}deg)`;
+    el.style.borderRadius=Math.random()>0.5?'50%':'3px';
+    document.body.appendChild(el);setTimeout(()=>el.remove(),2500);
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  SELF-AWARD GRIT (standalone, any tab)
+// ══════════════════════════════════════════════════
+function selfAwardGrit() {
+  const d=getData();
+  d.gritPts=(d.gritPts||0)+5;
+  save('gritPts',d.gritPts);
+  spawnConfetti();
+  const el=document.getElementById('stratGritTotal');
+  if(el)el.textContent=d.gritPts;
+  // Bounce grit display on home
+  const gd=document.getElementById('gritPtsDisplay');
+  if(gd){gd.textContent=`💪 ${d.gritPts}`;gd.style.transform='scale(1.3)';setTimeout(()=>gd.style.transform='',400);}
+  renderHome();
+}
+
+// ══════════════════════════════════════════════════
+//  HOME MH WIDGET — sync with main Wellbeing log
+// ══════════════════════════════════════════════════
+function syncHomeMhWidget() {
+  const d=getData();
+  const today=new Date().toISOString().split('T')[0];
+  const todayLog=d.mhLog&&d.mhLog.find(l=>l.date===today);
+  const titleEl=document.getElementById('homeMhTitle');
+  const scoreEl=document.getElementById('homeMhScore');
+  const copingEl=document.getElementById('homeMhCopingMsg');
+  if(!titleEl)return;
+  if(todayLog){
+    const weather=['','⛈️','🌧️','🌦️','⛅','🌤️','☀️','🌈','⭐','🌟','🔆'][todayLog.score]||'🌤️';
+    scoreEl.textContent=`${weather} ${todayLog.score}/10 — checked in today`;
+    // Highlight the selected icon
+    document.querySelectorAll('#homeMhRow .mh-icon').forEach((ic,idx)=>{
+      ic.classList.toggle('sel',idx+1===todayLog.score);
+    });
+    // Show coping advice if low
+    if(todayLog.score<4){
+      const isF1=currentPersona==='f1';
+      copingEl.style.display='block';
+      copingEl.textContent=isF1
+        ?'🚦 Safety Car deployed. Box, box — rest mode activated. You\'ll come back stronger next lap.'
+        :'🌿 Resting Cave unlocked. Bibble says: take it easy today. Small steps are still steps. 💛';
+    } else if(todayLog.score>=4&&todayLog.score<=6){
+      copingEl.style.display='block';
+      const advice=STRESS_DESK;
+      copingEl.textContent='💡 '+advice[Math.floor(Math.random()*advice.length)];
+    } else {
+      copingEl.style.display='none';
+    }
+    if(currentPersona==='f1'){
+      titleEl.textContent='📡 Driver Status Check';
+    }
+  } else {
+    scoreEl.textContent='tap to check in';
+    copingEl.style.display='none';
+    titleEl.textContent=currentPersona==='f1'?'📡 Driver Status Check':'🌤️ How are you feeling?';
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  STRATEGY ENGINE
+// ══════════════════════════════════════════════════
+let strategyPlan=null; // stored in memory (not persisted — re-generate each session)
+
+function parseOCRTopics(text) {
+  if(!text.trim())return[];
+  const lines=text.split(/\n+/).map(l=>l.trim()).filter(l=>l.length>2);
+  const topics=[];
+  let currentChapter='';
+  lines.forEach(line=>{
+    // Detect chapter/section headers
+    if(/^(chapter|kapitel|abschnitt|unit|teil|section|topic|\d+\.)\s/i.test(line)||/^[A-Z\d][^a-z]{0,5}:/.test(line)){
+      currentChapter=line.replace(/^[\d.]+\s*/,'').replace(/:$/,'').trim();
+      topics.push({topic:currentChapter,isHeader:true,parent:null});
+    } else if(/^[-–•*]\s+/.test(line)||/^\d+\.\d/.test(line)){
+      // Sub-topic bullet
+      const clean=line.replace(/^[-–•*\d.]\s*/,'').trim();
+      if(clean.length>2)topics.push({topic:clean,isHeader:false,parent:currentChapter});
+    } else if(line.length>3&&line.length<120){
+      topics.push({topic:line,isHeader:false,parent:currentChapter});
+    }
+  });
+  return topics.filter(t=>t.topic.length>2);
+}
+
+function distributeTopics(topics, totalHours, startDate, examDate) {
+  if(!topics.length||!totalHours||!startDate||!examDate)return[];
+  const start=new Date(startDate),exam=new Date(examDate);
+  start.setHours(0,0,0,0);exam.setHours(0,0,0,0);
+  const days=Math.max(1,Math.round((exam-start)/(1000*60*60*24)));
+  const studyDays=Math.min(days,Math.ceil(days*0.85)); // leave ~15% buffer before exam
+  const hoursPerDay=Math.round((totalHours/studyDays)*10)/10;
+  const nonHeaderTopics=topics.filter(t=>!t.isHeader);
+  const chunkSize=Math.max(1,Math.ceil(nonHeaderTopics.length/studyDays));
+  const plan=[];
+  for(let d=0;d<studyDays;d++){
+    const dt=new Date(start);dt.setDate(dt.getDate()+d);
+    const slice=nonHeaderTopics.slice(d*chunkSize,(d+1)*chunkSize);
+    if(!slice.length)break;
+    plan.push({
+      date:dt.toISOString().split('T')[0],
+      dateLabel:dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}),
+      topics:slice,
+      hours:hoursPerDay,
+      done:false,
+      id:'stint-'+d+'-'+Date.now(),
+    });
+  }
+  return plan;
+}
+
+function parseStrategy() {
+  const subject=document.getElementById('stratSubject').value||'General';
+  const examDate=document.getElementById('stratExamDate').value;
+  const ocrText=document.getElementById('stratOCRText').value;
+  const hoursVal=parseFloat(document.getElementById('stratHours').value);
+  const startDate=document.getElementById('stratStartDate').value;
+
+  if(!ocrText.trim()){alert('Please paste your exam requirements first!');return;}
+  if(!examDate){alert('Please set the exam date!');return;}
+  if(!hoursVal||hoursVal<=0){alert('Please enter how many study hours you have!');return;}
+  if(!startDate){alert('Please set the start date!');return;}
+  if(new Date(startDate)>=new Date(examDate)){alert('Start date must be before exam date!');return;}
+
+  const topics=parseOCRTopics(ocrText);
+  if(!topics.length){alert('Bibble couldn\'t find any topics in that text. Try formatting with bullet points or numbered lines!');return;}
+
+  const plan=distributeTopics(topics,hoursVal,startDate,examDate);
+  strategyPlan={subject,examDate,totalHours:hoursVal,startDate,topics,plan};
+
+  renderStrategyPlan();
+  flashSuccess('stratSuccess');
+  document.getElementById('stratPlanCard').style.display='block';
+}
+
+function recalculateStrategy() {
+  if(!strategyPlan){alert('No plan to recalculate! Generate a plan first.');return;}
+  // Find undone stints from today onwards
+  const today=new Date().toISOString().split('T')[0];
+  const doneBefore=strategyPlan.plan.filter(s=>s.done||s.date<today);
+  const remaining=strategyPlan.plan.filter(s=>!s.done&&s.date>=today);
+  if(!remaining.length){alert('All stints are completed! 🎉');return;}
+
+  // Collect all remaining topics and redistribute
+  const remainingTopics=remaining.flatMap(s=>s.topics);
+  const remainingHours=remaining.reduce((a,s)=>a+s.hours,0);
+  const remainingDates=remaining.map(s=>s.date);
+  const firstDate=remainingDates[0];
+  const lastDate=remainingDates[remainingDates.length-1];
+
+  const newStints=distributeTopics(
+    remainingTopics.map(t=>({...t,isHeader:false})),
+    remainingHours,
+    firstDate,
+    // use one day after last remaining date as the 'exam' for distribution
+    (() => { const d=new Date(lastDate); d.setDate(d.getDate()+1); return d.toISOString().split('T')[0]; })()
+  );
+
+  strategyPlan.plan=[...doneBefore,...newStints];
+  renderStrategyPlan();
+  // Visual feedback
+  spawnConfetti();
+  const btn=document.querySelector('[onclick="recalculateStrategy()"]');
+  if(btn){btn.textContent='✅ Recalculated!';setTimeout(()=>btn.textContent='🔄 Recalculate',1500);}
+}
+
+function renderStrategyPlan() {
+  if(!strategyPlan)return;
+  const card=document.getElementById('stratPlanCard');
+  const display=document.getElementById('stratPlanDisplay');
+  const meta=document.getElementById('stratPlanMeta');
+  const title=document.getElementById('stratPlanTitle');
+  if(!card||!display)return;
+  card.style.display='block';
+
+  const isF1=currentPersona==='f1';
+  title.textContent=isF1?'🏎️ Race Strategy — Sector Plan':'📅 Study Plan';
+
+  const {subject,examDate,totalHours,plan}=strategyPlan;
+  const doneCount=plan.filter(s=>s.done).length;
+  const topicCount=plan.flatMap(s=>s.topics).length;
+  meta.textContent=`${subject} · Exam: ${examDate} · ${totalHours}h total · ${topicCount} topics · ${doneCount}/${plan.length} stints done`;
+
+  display.innerHTML=plan.map((stint,i)=>{
+    const topicHtml=stint.topics.map(t=>
+      `<div style="font-size:0.8rem;font-weight:600;color:var(--text-light);padding:1px 0;">· ${t.topic}${t.parent?' <span style="font-size:0.68rem;background:#ede9fe;padding:1px 6px;border-radius:5px;color:var(--purple);">'+t.parent+'</span>':''}</div>`
+    ).join('');
+    return `<div class="stint-card ${stint.done?'done-stint':''}">
+      <div class="stint-day-header">${isF1?'Stint':'Session'} ${i+1} &nbsp;·&nbsp; ${stint.dateLabel}<span class="stint-hours">${stint.hours}h</span></div>
+      ${topicHtml}
+      <div class="stint-actions">
+        <button class="stint-done-btn ${stint.done?'undone':''}" onclick="toggleStint(${i})">${stint.done?'↩️ Undo':'✅ Mark done'}</button>
+        ${!stint.done?`<button class="grit-award-btn" onclick="stintGrit(${i})" style="font-size:0.74rem;">💪 +Grit for effort</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleStint(idx) {
+  if(!strategyPlan)return;
+  strategyPlan.plan[idx].done=!strategyPlan.plan[idx].done;
+  renderStrategyPlan();
+}
+
+function stintGrit(idx) {
+  if(!strategyPlan)return;
+  const d=getData();
+  d.gritPts=(d.gritPts||0)+10;
+  save('gritPts',d.gritPts);
+  strategyPlan.plan[idx].done=true;
+  spawnConfetti();
+  renderStrategyPlan();
+  renderHome();
+  const el=document.getElementById('stratGritTotal');if(el)el.textContent=d.gritPts;
+}
+
+function renderPitWall() {
+  const d=getData();
+  const el=document.getElementById('pitWallDisplay');if(!el)return;
+  const title=document.getElementById('pitWallTitle');
+  const subtitle=document.getElementById('pitWallSubtitle');
+  const isF1=currentPersona==='f1';
+
+  if(title)title.textContent=isF1?'🏎️ Pit Wall — Today\'s Stints':'📋 Today\'s Study Sessions';
+  if(subtitle)subtitle.textContent=isF1
+    ?'Priority tasks for today\'s race. Hardest sectors first.'
+    :'Your most important tasks today, by priority.';
+
+  const today=new Date().toISOString().split('T')[0];
+  const tasks=(d.tasks||[]).filter(t=>!t.done);
+  const todayTasks=tasks.filter(t=>t.due===today);
+  const soonTasks=tasks.filter(t=>t.due>today&&t.due<=new Date(Date.now()+7*86400000).toISOString().split('T')[0]);
+
+  // Also include strategy plan stints for today
+  const planStints=(strategyPlan?.plan||[]).filter(s=>s.date===today&&!s.done);
+
+  if(!todayTasks.length&&!planStints.length&&!soonTasks.length){
+    el.innerHTML=`<div style="color:var(--text-light);font-size:0.86rem;font-weight:600;">Nothing due today! ${isF1?'Enjoy the rest day, driver. 🏁':'Enjoy your day, Bibble is proud! ✨'}</div>`;
+    return;
+  }
+
+  const priorityOrder={hard:0,medium:1,easy:2};
+  const sorted=[...todayTasks].sort((a,b)=>(priorityOrder[a.difficulty||'medium']||1)-(priorityOrder[b.difficulty||'medium']||1));
+  const priorityEmoji=['🔴','🟠','🟡','🟢'];
+
+  let html='';
+  if(sorted.length||planStints.length){
+    html+=`<div class="stint-day-header" style="font-size:0.85rem;">${isF1?'📍 Today\'s Stints':'📍 Due Today'}</div>`;
+    sorted.forEach((t,i)=>{
+      html+=`<div class="pitwall-today">
+        <div class="pitwall-priority">${priorityEmoji[Math.min(i,3)]}</div>
+        <div class="pitwall-info">
+          <div class="pitwall-task">${t.title}</div>
+          <div class="pitwall-sub">${t.subject} · ${t.difficulty==='hard'?'🔴 Hard':t.difficulty==='easy'?'🟢 Easy':'🟡 Medium'}</div>
+        </div>
+        <button class="stint-done-btn" onclick="toggleTaskFromStrategy(${(d.tasks||[]).indexOf(t)})">✅</button>
+      </div>`;
+    });
+    planStints.forEach((s,i)=>{
+      html+=`<div class="pitwall-today">
+        <div class="pitwall-priority">⚡</div>
+        <div class="pitwall-info">
+          <div class="pitwall-task">${isF1?'Stint':'Study Session'}: ${s.topics.slice(0,2).map(t=>t.topic).join(', ')}${s.topics.length>2?' +more':''}</div>
+          <div class="pitwall-sub">${strategyPlan.subject} · ${s.hours}h</div>
+        </div>
+        <button class="stint-done-btn" onclick="toggleStint(${strategyPlan.plan.indexOf(s)});renderPitWall();">✅</button>
+      </div>`;
+    });
+  }
+  if(soonTasks.length){
+    html+=`<div class="stint-day-header" style="font-size:0.82rem;margin-top:10px;">📅 Coming this week</div>`;
+    soonTasks.slice(0,4).forEach(t=>{
+      const due=new Date(t.due),diff=Math.ceil((due-new Date())/(1000*60*60*24));
+      html+=`<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;padding:5px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-weight:800;color:var(--purple);min-width:32px;">+${diff}d</span>
+        <span style="flex:1;font-weight:700;">${t.title}</span>
+        <span style="font-size:0.72rem;color:var(--text-light);">${t.subject}</span>
+      </div>`;
+    });
+  }
+  el.innerHTML=html;
+  // Update grit total label
+  const gt=document.getElementById('stratGritTotal');if(gt)gt.textContent=d.gritPts||0;
+}
+
+function toggleTaskFromStrategy(idx) {
+  const d=getData();if(!d.tasks[idx])return;
+  d.tasks[idx].done=!d.tasks[idx].done;
+  save('tasks',d.tasks);
+  renderPitWall();renderTasks();
+}
+
+function renderStrategy() {
+  renderPitWall();
+  // Sync subject dropdown
+  const d=getData();
+  const sel=document.getElementById('stratSubject');
+  if(sel){
+    const cv=sel.value;
+    sel.innerHTML='<option value="">— choose —</option>'+
+      d.subjects.map(s=>`<option value="${s.name}">${s.name}</option>`).join('')+
+      '<option value="General">General</option>';
+    if(cv)sel.value=cv;
+  }
+  // Restore plan if exists
+  if(strategyPlan){renderStrategyPlan();}
+  // Grit label persona sync
+  const gl=document.getElementById('stratGritLabel');
+  if(gl)gl.textContent=currentPersona==='f1'?'Completed a sector? Award yourself Grit Points!':'Completed a study stint? Award yourself Grit Points!';
+}
+
+// ══════════════════════════════════════════════════
+//  ICAL EXPORT (upgraded with Power-Up prep sessions)
+// ══════════════════════════════════════════════════
+function exportIcal() {
+  const d=getData();
+  const tasks=d.tasks||[];
+  if(!tasks.length){alert('No assignments to export! Add tasks first.');return;}
+
+  const created=new Date().toISOString().replace(/[-:.]/g,'').slice(0,15)+'Z';
+  let ical='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//BibbleStudyTracker//EN\r\nCALSCALE:GREGORIAN\r\n';
+
+  tasks.forEach(t=>{
+    // Main exam/task event
+    const uid=`task-${t.id||Date.now()}@bibble`;
+    const due=t.due.replace(/-/g,'');
+    ical+=`BEGIN:VEVENT\r\nUID:${uid}\r\nDTSTAMP:${created}\r\nSUMMARY:📚 ${t.subject} — ${t.title}\r\nDTSTART;VALUE=DATE:${due}\r\nDTEND;VALUE=DATE:${due}\r\nDESCRIPTION:Difficulty: ${t.difficulty||'medium'}. Bibble's Study Tracker.\r\nCATEGORIES:EXAM\r\nEND:VEVENT\r\n`;
+
+    // Power-Up session 7 days before
+    const due7=new Date(t.due);due7.setDate(due7.getDate()-7);
+    if(due7>=new Date()){
+      const d7=due7.toISOString().split('T')[0].replace(/-/g,'');
+      ical+=`BEGIN:VEVENT\r\nUID:powerup7-${t.id||Date.now()}@bibble\r\nDTSTAMP:${created}\r\nSUMMARY:⚡ Power-Up: ${t.subject} (7 days out)\r\nDTSTART;VALUE=DATE:${d7}\r\nDTEND;VALUE=DATE:${d7}\r\nDESCRIPTION:Suggested prep session: review core topics for ${t.title}. Bibble says: small steps now = big wins later!\r\nCATEGORIES:STUDY\r\nEND:VEVENT\r\n`;
+    }
+
+    // Power-Up session 3 days before
+    const due3=new Date(t.due);due3.setDate(due3.getDate()-3);
+    if(due3>=new Date()){
+      const d3=due3.toISOString().split('T')[0].replace(/-/g,'');
+      ical+=`BEGIN:VEVENT\r\nUID:powerup3-${t.id||Date.now()}@bibble\r\nDTSTAMP:${created}\r\nSUMMARY:🔥 Final Prep: ${t.subject} (3 days out)\r\nDTSTART;VALUE=DATE:${d3}\r\nDTEND;VALUE=DATE:${d3}\r\nDESCRIPTION:Final sprint prep for ${t.title}. Focus on weak spots and practice questions. You've got this!\r\nCATEGORIES:STUDY\r\nEND:VEVENT\r\n`;
+    }
+  });
+
+  ical+='END:VCALENDAR';
+  const blob=new Blob([ical],{type:'text/calendar'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bibble-study-plan.ics';a.click();
+}
+
+function exportStratIcal() {
+  if(!strategyPlan){alert('Generate a study plan first!');return;}
+  const created=new Date().toISOString().replace(/[-:.]/g,'').slice(0,15)+'Z';
+  let ical='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//BibbleStudyTracker//EN\r\nCALSCALE:GREGORIAN\r\n';
+
+  strategyPlan.plan.forEach((stint,i)=>{
+    const dateStr=stint.date.replace(/-/g,'');
+    const topicsSummary=stint.topics.slice(0,3).map(t=>t.topic).join('; ')+(stint.topics.length>3?' +more':'');
+    ical+=`BEGIN:VEVENT\r\nUID:stint-${i}-${Date.now()}@bibble\r\nDTSTAMP:${created}\r\nSUMMARY:📚 ${strategyPlan.subject} Study — ${stint.hours}h\r\nDTSTART;VALUE=DATE:${dateStr}\r\nDTEND;VALUE=DATE:${dateStr}\r\nDESCRIPTION:Topics: ${topicsSummary}. Bibble's Study Tracker.\r\nCATEGORIES:STUDY\r\nEND:VEVENT\r\n`;
+  });
+
+  // Exam day marker
+  const examStr=strategyPlan.examDate.replace(/-/g,'');
+  ical+=`BEGIN:VEVENT\r\nUID:exam-${Date.now()}@bibble\r\nDTSTAMP:${created}\r\nSUMMARY:🏆 EXAM DAY: ${strategyPlan.subject}\r\nDTSTART;VALUE=DATE:${examStr}\r\nDTEND;VALUE=DATE:${examStr}\r\nDESCRIPTION:Exam for ${strategyPlan.subject}. You've prepared well — Bibble believes in you!\r\nCATEGORIES:EXAM\r\nEND:VEVENT\r\n`;
+
+  ical+='END:VCALENDAR';
+  const blob=new Blob([ical],{type:'text/calendar'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`bibble-${strategyPlan.subject}-plan.ics`;a.click();
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const d=getData();
+  currentPersona=d.persona||'fairy';
+  setPersona(currentPersona);
+
+  document.getElementById('gradeDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('payoutDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('taskDue').value=new Date().toISOString().split('T')[0];
+  const ssd=document.getElementById('stratStartDate');if(ssd)ssd.value=new Date().toISOString().split('T')[0];
+
+  animateBibble();
+
+  document.getElementById('petMessage').textContent=(currentPersona==='f1'?FALLBACK_F1:FALLBACK_FAIRY)[0];
+  newMessage();
+
+  renderAll();
+});
+</script>
+</body>
+</html>
